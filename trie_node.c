@@ -35,18 +35,18 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
             temp->children[0] = create_trie_node();
             temp->children[0]->word = copy_string(word);
             temp->current_children ++;
-            spot = 0;
             printf("prosthetw tin leksi %s afou exei 0 paidia\n", word);
 
         }
         else
         {
+            spot = 0;
             a = 0;
             b = temp->current_children;
             found_word = 0;
 
 
-            while((a <= b) && (a< temp->current_children) && (b>0))
+            while((a <= b) && (a< temp->current_children))
             {
                 m = (a + b) /2;
                 // printf("M is %d\n", m);
@@ -82,7 +82,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
                 if(temp->current_children == temp->max_children)
                 {/*we need to give more space to our children's array*/
                     temp->max_children *=2;
-                    temp->children = realloc(temp->children, temp->max_children);
+                    temp->children = realloc(temp->children, temp->max_children*sizeof(trie_node *));
                 }
 
                 int i;

@@ -6,16 +6,16 @@
 typedef int OK_SUCCESS;
 
 typedef struct trie_node{
-    char* word;
-    char is_final;
-    int current_children;
-    int max_children;
-    struct trie_node** children;
+  char* word;
+  char is_final;
+  int current_children;
+  int max_children;
+  struct trie_node** children;
 }trie_node;
 
 
 typedef struct trie{
-    trie_node* root;
+  trie_node* root;
 }trie;
 
 

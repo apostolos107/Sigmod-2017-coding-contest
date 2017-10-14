@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-// #include <string.h>
+#include <string.h>
 
 #include "trie.h"
 // #include "tools.h"
@@ -15,6 +15,7 @@ int main (void)
   mytree->root = init_trie();
   while(getline(&buf, &size, stdin) != -1)
   {
+      buf[strlen(buf)-1] = '\0';
       printf("%d\n", insert_ngram(mytree, buf));
   }
   // int count = count_words(buf);

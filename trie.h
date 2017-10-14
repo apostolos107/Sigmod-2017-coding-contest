@@ -13,7 +13,7 @@ trie_node * init_trie();
 OK_SUCCESS insert_ngram(trie * my_trie, char * ngram);
 
 
-// OK_SUCCESS delete_ngram(index* ind,​​...​) ;
+OK_SUCCESS delete_ngram(trie * my_trie, char * ngram) ;
 // char* search(index* ind, ​​..);
 
 int count_words(char * sentence);

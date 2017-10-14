@@ -109,3 +109,23 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
         temp = temp->children[spot];
     }
 }
+
+OK_SUCCESS anadromic_delete(trie_node* node,char* remaining)
+{
+    if(remaining==NULL)
+    {
+        return 2;
+    }
+    char* newremaining=strtok(NULL, " ");
+    int return_value=anadromic_delete(node,newremaining);
+    if(return_value==1)
+    {
+        printf("%s\n",remaining);
+        return 1;
+    }else if(return_value==2){
+        printf("I am the last: %s\n", remaining);
+        return 1;
+    }else{
+        return -1;
+    }
+}

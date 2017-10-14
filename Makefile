@@ -1,5 +1,5 @@
-SOURCE = trie.c
-OBJS = trie.o
+SOURCE = ngrams.c trie.c tools.c
+OBJS = ngrams.o trie.o tools.o
 EXEC =NGrams.exe
 CC	= gcc
 FLAGS   = -g -c
@@ -8,9 +8,14 @@ FLAGS   = -g -c
 $(EXEC): $(OBJS)
 	$(CC) -g $? -o $@
 
+ngrams.o: ngrams.c
+	$(CC) $(FLAGS) $?
+
 trie.o: trie.c
 	$(CC) $(FLAGS) $?
 
+tools.o: tools.c
+	$(CC) $(FLAGS) $?
 
 clean:
 	rm -rf $(EXEC) $(OBJS)

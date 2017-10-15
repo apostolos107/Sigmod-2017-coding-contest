@@ -18,5 +18,6 @@ typedef struct trie_node{
 trie_node* create_trie_node();
 OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram);
 OK_SUCCESS anadromic_delete(trie_node* node,char* word);
+OK_SUCCESS delete_node_child(trie_node* node,int position);
 
 #endif

@@ -19,7 +19,7 @@ int main (void)
   //     printf("%d\n", insert_ngram(mytree, buf));
   // }
   int i;
-  for (i = 0; i < 5; i++)
+  for (i = 0; i < 2; i++)
   {
       getline(&buf, &size, stdin);
       buf[strlen(buf)-1] = '\0';

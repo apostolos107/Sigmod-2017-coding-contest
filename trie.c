@@ -3,7 +3,7 @@
 // #include <string.h>
 
 #include "trie.h"
-
+#include "tools.h"
 trie_node * init_trie()
 {
   trie_node * node = create_trie_node();
@@ -27,6 +27,6 @@ trie_node* create_trie_node()
   node->is_final = 'N';
   node->current_children = 0;
   node->max_children = NUMBER_OF_CHILDREN;
-  
+
   return node;
 }

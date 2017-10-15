@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-// #include <string.h>
+#include <string.h>
 
-#include "trie.h"
 #include "tools.h"
+#include "trie.h"
 
 #define CHAR_BUFFER_SIZE 128
 int main (int argc, char* argv[])
@@ -18,16 +18,18 @@ int main (int argc, char* argv[])
 
   int i;
   for (i = 1; i < argc; i++) {
-    if(argv[i]=="-i"){
-      if(argc+1>=i){
+    if( strcmp(argv[i],"-i")==0 ){
+      if(i+1>=argc){
         error_exit("Bad arguments for -i");
       }
-      init_filename=argv[i+1];
-    }else if(argv[i]=="-q"){
-      if(argc+1>=i){
+      i++;
+      init_filename=argv[i];
+    }else if(strcmp(argv[i],"-q")==0){
+      if(i+1>=argc){
         error_exit("Bad arguments for -q");
       }
-      query_filename=argv[i+1];
+      i++;
+      query_filename=argv[i];
     }else{
       printf("Uknown argument {%s}\n", argv[i]);
       error_exit("Bad arguments");
@@ -46,8 +48,8 @@ int main (int argc, char* argv[])
     read_from=init_file;
   }else if(query_filename!=NULL){
     //if there is no init file use the query file if exists ALONE
-    FILE* query_file = fopen(query_file, "r");
-    if(query_file!=NULL){
+    FILE* query_file = fopen(query_filename, "r");
+    if(query_file==NULL){
       error_exit("Not good query file");
     }
     query_filename=NULL;
@@ -61,48 +63,49 @@ int main (int argc, char* argv[])
   char* the_word=NULL;
   while(1){
 
-    chars_read=getline(&buf, &size, stdin);
+    chars_read=getline(&buf, &size, read_from);
 
     if(chars_read==-1){
-      printf("Nothing read, I am breaking/changing\n");
       //or switch beetwen file to stdin
       if(read_from==stdin){
         printf("Bye\n");
         //that means exit
       }else{
         // that means that we finshed with a file, but which?
-        printf("end with a file, now use the next or what?\n");
         fclose(read_from);
         if(query_filename==NULL){
           read_from=stdin;
         }else{
           read_from=fopen(query_filename, "r");
           if(read_from==NULL){
-            error_exit("Not good query file but it's late now :P read from stdin");
             read_from=stdin;
           }
+          query_filename=NULL;
         }
+        continue;
       }
       //maybe we will need to excecute somthing like F first
       break;
     }
+    //it removes the \n at the end and adds a \0
+    buf[chars_read-1]='\0';
     if(buf[0]=='Q'){
-      the_word=&buf[1];
-      printf("Question{%s}\n", the_word);
+      the_word=&buf[2];
+      printf("---Question{%s}\n", the_word);
 
     }else if(buf[0]=='A'){
-      the_word= &buf[1];
-      printf("Add{%s}\n", the_word);
+      the_word= &buf[2];
+      printf("---Add{%s}\n", the_word);
 
     }else if(buf[0]=='D'){
-      the_word= &buf[1];
-      printf("Delete{%s}\n", the_word);
+      the_word= &buf[2];
+      printf("---Delete{%s}\n", the_word);
 
     }else if(buf[0]=='F'){
-      printf("An wild F apperead\n");
+      printf("---An wild F apperead\n");
 
     }else{
-      printf("I don't know what is this{%s}{%d}\n",buf,chars_read);
+      printf("---I don't know what is this{%s}{%d}\n",buf,chars_read);
 
     }
   }

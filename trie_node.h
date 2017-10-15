@@ -18,5 +18,6 @@ typedef struct trie_node{
 trie_node* create_trie_node();
 OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram);
 OK_SUCCESS anadromic_delete(trie_node* node,char* word);
-
+//binary search that returns the index in the array of the children or -1
+int search_kid(trie_node* master_node,char* word);
 #endif

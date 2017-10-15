@@ -129,3 +129,50 @@ OK_SUCCESS anadromic_delete(trie_node* node,char* remaining)
         return -1;
     }
 }
+
+//binarty search that returns the index in the array of the children
+int binary_search_kid(trie_node* master_node,char* word){
+    int spot = 0;//the current spot
+    int a = 0;//the base index in array
+    int b = master_node->current_children;//the max index in array
+    int found_word = 0;//bool, 1 if found
+    int m;//the middle of hte [a,b]
+    if(master_node->current_children==0){
+        //if no childrens
+        return -1;
+    }
+    while((a <= b) && (a< master_node->current_children))
+    {
+        m = (a + b) /2;
+        // printf("M is %d\n", m);
+        if ( strcmp(word, master_node->children[m]->word) == 0)
+        { /*this sentence exist as far as here*/
+            spot = m;
+            found_word =1;
+            printf("i leksi %s ipirxe\n", word);
+            break;
+        }
+        else if( strcmp(word, master_node->children[m]->word) < 0)
+        {/*word belongs before this child*/
+            if(m == 0)
+            {
+                spot = 0;
+                break;
+            }
+            b = m-1;
+            spot = b;
+        }
+        else if( strcmp(word, master_node->children[m]->word) > 0)
+        {/*word belongs after this child*/
+            a = m+1;
+            spot = a;
+        }
+        // printf("A is %d , B is %d\n",a,b );
+
+    }
+    if(found_word==0){
+        return -1;
+    }else{
+        return spot;
+    }
+}

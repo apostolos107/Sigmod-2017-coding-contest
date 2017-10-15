@@ -108,7 +108,7 @@ int main (int argc, char* argv[])
             delete_ngram(mytree, the_word);
 
         }else if(buf[0]=='F'){
-            printf("---An wild F apperead\n");
+            printf("---A wild F appeared\n");
         }else{
             printf("---I don't know what is this{%s}{%d}\n",buf,chars_read);
         }

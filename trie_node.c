@@ -40,43 +40,8 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
         }
         else
         {
-            spot = 0;
-            a = 0;
-            b = temp->current_children;
-            found_word = 0;
-
-
-            while((a <= b) && (a< temp->current_children))
-            {
-                m = (a + b) /2;
-                // printf("M is %d\n", m);
-                if ( strcmp(word, temp->children[m]->word) == 0)
-                { /*this sentence exist as far as here*/
-                    spot = m;
-                    found_word =1;
-                    printf("i leksi %s ipirxe\n", word);
-                    break;
-                }
-                else if( strcmp(word, temp->children[m]->word) < 0)
-                {/*word belongs before this child*/
-                    if(m == 0)
-                    {
-                        spot = 0;
-                        break;
-                    }
-                    b = m-1;
-                    spot = b;
-                }
-                else if( strcmp(word, temp->children[m]->word) > 0)
-                {/*word belongs after this child*/
-                    a = m+1;
-                    spot = a;
-                }
-                // printf("A is %d , B is %d\n",a,b );
-
-            }
-
-            if( !found_word)
+            found_word = binary_search_kid(temp, word, &spot);
+            if( found_word==-1)
             {/*add a new child at the {spot} position*/
                 // printf("Spot is %d\n", spot );
                 if(temp->current_children == temp->max_children)
@@ -240,11 +205,7 @@ int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg){
 
     }
     if(spot_ptr_arg!=NULL){
-        if(found_word==0){
-            *spot_ptr_arg=-1;
-        }else{
-            *spot_ptr_arg=spot;
-        }
+        *spot_ptr_arg=spot;
     }
     if(found_word==0){
         return -1;

@@ -92,8 +92,12 @@ int main (int argc, char* argv[])
         if(buf[0]=='Q'){
             the_word=&buf[2];
             printf("---Question{%s}\n", the_word);
-            search(mytree,the_word);
-
+            result_of_search* result = search(mytree,the_word);
+            if(result->num_of_results!=0){
+                printf("^^^[%s]\n",result->cur_word);
+            }else{
+                printf("^^^-1\n");
+            }
         }else if(buf[0]=='A'){
             the_word= &buf[2];
             printf("---Add{%s}\n", the_word);

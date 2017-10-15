@@ -195,8 +195,8 @@ OK_SUCCESS anadromic_delete(trie_node* node,char* remaining)
     }
 }
 
-//binarty search that returns the index in the array of the children
-int binary_search_kid(trie_node* master_node,char* word){
+//binary search that returns the index in the array of the children
+int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg){
     int spot = 0;//the current spot
     int a = 0;//the base index in array
     int b = master_node->current_children;//the max index in array
@@ -235,9 +235,16 @@ int binary_search_kid(trie_node* master_node,char* word){
         // printf("A is %d , B is %d\n",a,b );
 
     }
+    if(spot_ptr_arg!=NULL){
+        if(found_word==0){
+            *spot_ptr_arg=-1;
+        }else{
+            *spot_ptr_arg=spot;
+        }
+    }
     if(found_word==0){
         return -1;
     }else{
-        return spot;
+        return 1;
     }
 }

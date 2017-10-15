@@ -33,6 +33,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
         { /*we need to add a new child cause this node has 0 of them */
             temp->children[0] = create_trie_node();
             temp->children[0]->word = copy_string(word);
+            spot = 0;
             temp->current_children ++;
             printf("prosthetw tin leksi %s afou exei 0 paidia\n", word);
 
@@ -204,6 +205,9 @@ int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg){
     int m;//the middle of hte [a,b]
     if(master_node->current_children==0){
         //if no childrens
+        if(spot_ptr_arg!=NULL){
+            *spot_ptr_arg=0;
+        }
         return -1;
     }
     while((a <= b) && (a< master_node->current_children))

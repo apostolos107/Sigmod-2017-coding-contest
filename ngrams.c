@@ -97,12 +97,11 @@ int main (int argc, char* argv[])
         }else if(buf[0]=='A'){
             the_word= &buf[2];
             printf("---Add{%s}\n", the_word);
-            insert_ngram(my_trie, the_word);
-
+            insert_ngram(mytree, the_word);
         }else if(buf[0]=='D'){
             the_word= &buf[2];
             printf("---Delete{%s}\n", the_word);
-            delete_ngram(my_trie, the_word);
+            delete_ngram(mytree, the_word);
 
         }else if(buf[0]=='F'){
             printf("---An wild F apperead\n");

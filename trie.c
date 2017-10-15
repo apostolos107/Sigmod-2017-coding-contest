@@ -1,32 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
-// #include <string.h>
-
+#include <string.h>
 #include "trie.h"
 #include "tools.h"
+
 trie_node * init_trie()
 {
-  trie_node * node = create_trie_node();
+    trie_node * node = create_trie_node();
 
-  if(node == NULL)
-    error_exit("Malloc Failure");
+    if(node == NULL)
+        error_exit("Malloc Failure");
 
-  node->word = malloc(1*sizeof(char));
-  node->word[0] = '\0';
+    node->word = malloc(1*sizeof(char));
+    node->word[0] = '\0';
 
-  return node;
+    return node;
 }
 
-trie_node* create_trie_node()
+
+OK_SUCCESS insert_ngram(trie * my_trie, char * ngram)
 {
-  trie_node * node = malloc(sizeof(trie_node));
+    return insert_ngram_to_node(my_trie->root, ngram);
+}
 
-  if(node == NULL)
-    error_exit("Malloc Failure");
-
-  node->is_final = 'N';
-  node->current_children = 0;
-  node->max_children = NUMBER_OF_CHILDREN;
-
-  return node;
+OK_SUCCESS delete_ngram(trie * my_trie, char * ngram)
+{
+    trie_node* root=my_trie->root;
+    char* word=strtok(ngram," ");
+    if(word==NULL)return -1;
+    return anadromic_delete(root,word);
 }

@@ -97,29 +97,9 @@ OK_SUCCESS anadromic_delete(trie_node* node,char* remaining)
     {/*end of N-gram*/
         return 2;
     }
-    int a=0,m,position,found=0;
-    int b=node->current_children;
-    while((a <= b) && (a< node->current_children))
-    {
-        m = (a + b) /2;
-        if ( strcmp(remaining, node->children[m]->word) == 0)
-        { /*this sentence exist as far as here*/
-            position = m;
-            found =1;
-            printf("i leksi %s iparxi\n", remaining);
-            break;
-        }
-        else if( strcmp(remaining, node->children[m]->word) < 0)
-        {/*word belongs before this child*/
-            if(m == 0)break;
-            b = m-1;
-        }
-        else if( strcmp(remaining, node->children[m]->word) > 0)
-        {/*word belongs after this child*/
-            a = m+1;
-        }
-    }
-    if(found==0)
+    int position,found=0;
+    found=binary_search_kid(node,remaining,&position);
+    if(found==-1)
     {/*the requested N-Grams doesn't exist */
         printf("i leksi %s den iparxi\n", remaining);
         return -1 ;

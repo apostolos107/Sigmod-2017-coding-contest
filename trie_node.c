@@ -91,54 +91,73 @@ OK_SUCCESS delete_node_child(trie_node* node,int position)
     return 1;
 }
 
-OK_SUCCESS anadromic_delete(trie_node* node,char* remaining)
+OK_SUCCESS trie_delete(trie_node* node,char* ngram)
 {
-    if(remaining==NULL)
-    {/*end of N-gram*/
-        return 2;
-    }
-    int position,found=0;
-    found=binary_search_kid(node,remaining,&position);
-    if(found==-1)
-    {/*the requested N-Grams doesn't exist */
-        printf("i leksi %s den iparxi\n", remaining);
-        return -1 ;
-    }
-
-    /*get next word of our N-Gram*/
-    char* newremaining=strtok(NULL, " ");
-    int return_value=anadromic_delete(node->children[position],newremaining);
-
-    if(return_value==1)
-    { /*It is a middle word or the first*/
-        if(node->children[position]->current_children==0 && node->children[position]->is_final!='Y')
-            /*If there are not children and It is not a final*/
-            delete_node_child(node,position);
-
-        return 1;
-    }
-    else if(return_value==2)
-    { /*Last word of Ngram*/
-        printf("I am the last: %s\n", remaining);
-        if(node->children[position]->is_final=='Y')
-        {/*It must be a final word*/
-            node->children[position]->is_final='N';
-            if(node->children[position]->current_children==0)
-            {
-                delete_node_child(node,position);
-                return 1;
-            }
+    int position,found;
+    node_list* head;
+    node_list* previous;
+    trie_node* temp_trie_node;
+    temp_trie_node=node;
+    head=create_list();
+    previous=head;
+    char* word=strtok(ngram," ");
+    if(word==NULL)return -1;
+    while(1)
+    {
+        if(word==NULL)
+        {/*end of N-gram*/
+            break;
         }
-        else
+        found=binary_search_kid(temp_trie_node,word,&position);
+        if(found==-1)
+        {/*the requested N-Grams doesn't exist */
+            printf("i leksi %s den iparxi\n", word);
+            return -1 ;
+        }
+        node_list* newnode=new_node_list(temp_trie_node,position,previous);
+        previous=newnode;
+        temp_trie_node=temp_trie_node->children[position];
+        /*get next word of our N-Gram*/
+        word=strtok(NULL, " ");
+    }
+    if(previous->node->children[previous->position]->is_final=='Y')
+    {/*It must be a final word*/
+        previous->node->children[previous->position]->is_final='N';
+        if(previous->node->children[previous->position]->current_children==0)
         {
-            printf("It is not a Final\n");
-            return -1;
+            printf("Delete %s\n",previous->node->children[previous->position]->word );
+            delete_node_child(previous->node,previous->position);
         }
     }
     else
     {
+        printf("It is not a Final\n");
         return -1;
     }
+    node_list* temp;
+    temp=previous;
+    previous=previous->previous;
+    free(temp);
+    while(1){
+        if(previous->previous==NULL)
+        {
+            break;
+        }
+        /*It is a middle word or the first*/
+        printf("Trying to delete %s\n",previous->node->children[previous->position]->word );
+        if(previous->node->children[previous->position]->current_children==0 && previous->node->children[previous->position]->is_final!='Y')
+        {
+            /*If there are not children and It is not a final*/
+            delete_node_child(previous->node,previous->position);
+            printf("deleted\n" );
+        }
+        temp=previous;
+        previous=previous->previous;
+        free(temp);
+    }
+    free(previous);
+    return 1;
+
 }
 
 //binary search that returns the index in the array of the children
@@ -163,7 +182,7 @@ int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg){
         { /*this sentence exist as far as here*/
             spot = m;
             found_word =1;
-            printf("i leksi %s ipirxe\n", word);
+            // printf("i leksi %s ipirxe\n", word);
             break;
         }
         else if( strcmp(word, master_node->children[m]->word) < 0)

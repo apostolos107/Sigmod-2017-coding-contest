@@ -12,6 +12,7 @@ typedef struct trie_node{
     int current_children;
     int max_children;
     struct trie_node* children;
+    struct trie_node* parent;
 }trie_node;
 
 

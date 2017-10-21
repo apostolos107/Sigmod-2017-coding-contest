@@ -53,6 +53,7 @@ result_of_search* new_result(int size){
 
 void delete_result(result_of_search** result){
     // free((*result)->cur_word);//do not delete the word, we need it
+    free((*result)->cur_word);
     free(*result);
     *result=NULL;
 }

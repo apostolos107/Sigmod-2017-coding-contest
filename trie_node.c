@@ -90,7 +90,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
         temp = &temp->children[spot];
     }
 }
-
+//
 // OK_SUCCESS delete_node_child(trie_node* node,int position)
 // {   /* free the child */
 //     free(node->children[position]->children);
@@ -107,76 +107,80 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
 //     return 1;
 // }
 //
-// OK_SUCCESS anadromic_delete(trie_node* node,char* remaining)
+// OK_SUCCESS trie_delete(trie_node* node,char* ngram)
 // {
-//     if(remaining==NULL)
-//     {/*end of N-gram*/
-//         return 2;
+//     int position,found,stack_count=0;
+//     int stack_size=count_words(ngram);
+//     stack_node* stack;
+//     stack=malloc(stack_size*sizeof(stack_node));
+//     trie_node* temp_trie_node;
+//     temp_trie_node=node;
+//     char* word=strtok(ngram," ");
+//     if(word==NULL){
+//         free(stack);
+//         return -1;
 //     }
-//     int a=0,m,position,found=0;
-//     int b=node->current_children;
-//     while((a <= b) && (a< node->current_children))
+//     while(1)
 //     {
-//         m = (a + b) /2;
-//         if ( strcmp(remaining, node->children[m]->word) == 0)
-//         { /*this sentence exist as far as here*/
-//             position = m;
-//             found =1;
-//             printf("i leksi %s iparxi\n", remaining);
+//         if(word==NULL)
+//         {/*end of N-gram*/
 //             break;
 //         }
-//         else if( strcmp(remaining, node->children[m]->word) < 0)
-//         {/*word belongs before this child*/
-//             if(m == 0)break;
-//             b = m-1;
+//         found=binary_search_kid(temp_trie_node,word,&position);
+//         if(found==-1)
+//         {/*the requested N-Grams doesn't exist */
+//             printf("i leksi %s den iparxi\n", word);
+//             free(stack);
+//             return -1 ;
 //         }
-//         else if( strcmp(remaining, node->children[m]->word) > 0)
-//         {/*word belongs after this child*/
-//             a = m+1;
-//         }
-//     }
-//     if(found==0)
-//     {/*the requested N-Grams doesn't exist */
-//         printf("i leksi %s den iparxi\n", remaining);
-//         return -1 ;
-//     }
-//
-//     /*get next word of our N-Gram*/
-//     char* newremaining=strtok(NULL, " ");
-//     int return_value=anadromic_delete(node->children[position],newremaining);
-//
-//     if(return_value==1)
-//     { /*It is a middle word or the first*/
-//         if(node->children[position]->current_children==0 && node->children[position]->is_final!='Y')
-//             /*If there are not children and It is not a final*/
-//             delete_node_child(node,position);
-//
-//         return 1;
-//     }
-//     else if(return_value==2)
-//     { /*Last word of Ngram*/
-//         printf("I am the last: %s\n", remaining);
-//         if(node->children[position]->is_final=='Y')
-//         {/*It must be a final word*/
-//             node->children[position]->is_final='N';
-//             if(node->children[position]->current_children==0)
-//             {
-//                 delete_node_child(node,position);
-//                 return 1;
-//             }
-//         }
-//         else
+//         if(stack_count>=stack_size)
 //         {
-//             printf("It is not a Final\n");
+//             printf("There is overflow in stack\n" );
+//             free(stack);
 //             return -1;
+//         }
+//         stack[stack_count].node=temp_trie_node;
+//         stack[stack_count].position=position;
+//         stack_count++;
+//         temp_trie_node=temp_trie_node->children[position];
+//         /*get next word of our N-Gram*/
+//         word=strtok(NULL, " ");
+//     }
+//     stack_count--;
+//     if(stack[stack_count].node->children[stack[stack_count].position]->is_final=='Y')
+//     {/*It must be a final word*/
+//         stack[stack_count].node->children[stack[stack_count].position]->is_final='N';
+//         if(stack[stack_count].node->children[stack[stack_count].position]->current_children==0)
+//         {
+//             printf("Delete %s\n",stack[stack_count].node->children[stack[stack_count].position]->word );
+//             delete_node_child(stack[stack_count].node,stack[stack_count].position);
 //         }
 //     }
 //     else
 //     {
+//         printf("It is not a Final\n");
+//         free(stack);
 //         return -1;
 //     }
+//     stack_count--;
+//     while(stack_count>=0){
+//         /*It is a middle word or the first*/
+//         printf("Trying to delete %s\n",stack[stack_count].node->children[stack[stack_count].position]->word );
+//         if(stack[stack_count].node->children[stack[stack_count].position]->current_children==0 && stack[stack_count].node->children[stack[stack_count].position]->is_final!='Y')
+//         {
+//             /*If there are not children and It is not a final*/
+//             delete_node_child(stack[stack_count].node,stack[stack_count].position);
+//             printf("deleted\n" );
+//         }
+//         stack_count--;
+//     }
+//     free(stack);
+//     return 1;
+//
 // }
 //
+
+
 //binary search that returns the index in the array of the children
 int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg){
     int spot = 0;//the current spot
@@ -199,7 +203,7 @@ int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg){
         { /*this sentence exist as far as here*/
             spot = m;
             found_word =1;
-            printf("i leksi %s ipirxe\n", word);
+            // printf("i leksi %s ipirxe\n", word);
             break;
         }
         else if( strcmp(word, master_node->children[m].word) < 0)

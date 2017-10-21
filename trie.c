@@ -27,10 +27,13 @@ OK_SUCCESS insert_ngram(trie * my_trie, char * ngram)
 // OK_SUCCESS delete_ngram(trie * my_trie, char * ngram)
 // {
 //     trie_node* root=my_trie->root;
-//     char* word=strtok(ngram," ");
-//     if(word==NULL)return -1;
-//     return anadromic_delete(root,word);
+//     return trie_delete(root,ngram);
 // }
+//
+// result_of_search* search(trie* my_trie,char* the_ngram)
+// {
+//     char* current_sub_str=&the_ngram[0];//start from the begining
+//     result_of_search* result = new_result(1024);
 
 // result_of_search* search(trie* my_trie,char* the_ngram)
 // {

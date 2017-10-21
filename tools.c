@@ -74,3 +74,21 @@ void add_to_result(result_of_search* result,char* the_word){
     result->cur_word[result->current_wrote+size_of_word+1]='\0';
     result->current_wrote+=size_of_word+1;
 }
+
+node_list* create_list(){
+    node_list* newnode;
+    newnode=malloc(sizeof(node_list));
+    newnode->node=NULL;
+    newnode->previous=NULL;
+    newnode->position=-1;
+    return newnode;
+}
+
+node_list* new_node_list(trie_node* trieNode,int position,node_list* previous){
+    node_list* newnode;
+    newnode=malloc(sizeof(node_list));
+    newnode->node=trieNode;
+    newnode->position=position;
+    newnode->previous=previous;
+    return newnode;
+}

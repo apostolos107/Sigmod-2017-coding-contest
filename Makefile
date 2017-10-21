@@ -4,7 +4,7 @@ EXEC =NGrams.exe
 CC	= gcc
 FLAGS   = -g -c
 
-all: $(EXEC)
+all: clean $(EXEC)
 
 $(EXEC): $(OBJS)
 	$(CC) -g $? -o $@

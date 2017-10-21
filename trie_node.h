@@ -11,13 +11,15 @@ typedef struct trie_node{
     char is_final;
     int current_children;
     int max_children;
-    struct trie_node** children;
+    struct trie_node* children;
+    struct trie_node* parent;
 }trie_node;
 
 
 trie_node* create_trie_node();
 OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram);
-OK_SUCCESS anadromic_delete(trie_node* node,char* word);
+OK_SUCCESS trie_delete(trie_node* node,char* ngram);
+OK_SUCCESS delete_node_child(trie_node* node,int position);
 
 /*  binary search that returns 1 if word found and -1 if not found
     if it's not NULL contains the spot that the search stoped

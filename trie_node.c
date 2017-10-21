@@ -237,3 +237,13 @@ int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg){
         return 1;
     }
 }
+
+OK_SUCCESS trie_node_clean(trie_node* node){
+    int i;
+    for(i=0;i<node->current_children;i++){
+        trie_node_clean(&node->children[i]);
+    }
+    free(node->word);
+    free(node->children);
+    return 1;
+}

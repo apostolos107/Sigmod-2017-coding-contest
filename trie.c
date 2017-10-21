@@ -24,11 +24,18 @@ OK_SUCCESS insert_ngram(trie * my_trie, char * ngram)
     return insert_ngram_to_node(my_trie->root, ngram);
 }
 
-// OK_SUCCESS delete_ngram(trie * my_trie, char * ngram)
-// {
-//     trie_node* root=my_trie->root;
-//     return trie_delete(root,ngram);
-// }
+OK_SUCCESS trie_clean(trie* mytree){
+    trie_node_clean(mytree->root);
+    free(mytree->root);
+    free(mytree);
+    return 1;
+}
+
+OK_SUCCESS delete_ngram(trie * my_trie, char * ngram)
+{
+    trie_node* root=my_trie->root;
+    return trie_delete(root,ngram);
+}
 //
 // result_of_search* search(trie* my_trie,char* the_ngram)
 // {

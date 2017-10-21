@@ -11,7 +11,7 @@ typedef struct trie_node{
     char is_final;
     int current_children;
     int max_children;
-    struct trie_node** children;
+    struct trie_node* children;
 }trie_node;
 
 

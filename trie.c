@@ -52,7 +52,7 @@ result_of_search* search(trie* my_trie,char* the_ngram)
 
 /***********************search for this ngram*************/
         int offset=0;//it's the offset of the current_sub_str to the word we are now
-        printf("Search for{%s}\n",current_sub_str);
+        // printf("Search for{%s}\n",current_sub_str);
         //i copy the srting because it changes with strtok
         char* search_for=copy_string(current_sub_str);
         trie_node* cur_node = my_trie->root;//start from the root
@@ -92,7 +92,7 @@ result_of_search* search(trie* my_trie,char* the_ngram)
         }
 /*****************end of search***************************/
         free(search_for);
-        printf("End of search for %s\n",current_sub_str);
+        // printf("End of search for %s\n",current_sub_str);
 /******************get the next word**********************/
         while(current_sub_str[0]!='\0' && current_sub_str[0]!=' '){
             //search until the next space or the end of the word

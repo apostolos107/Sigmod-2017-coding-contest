@@ -102,6 +102,7 @@ int main (int argc, char* argv[])
             }else{
                 printf("^^^-1\n");
             }
+            delete_result(&result);
         }else if(buf[0]=='A'){
             the_word= &buf[2];
             printf("---Add{%s}\n", the_word);

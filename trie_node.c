@@ -62,7 +62,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
                 if(temp->current_children == temp->max_children)
                 {/*we need to give more space to our children's array*/
                     temp->max_children *=2;
-                    temp->children = realloc(temp->children, temp->max_children*sizeof(trie_node *));
+                    temp->children = realloc(temp->children, temp->max_children*sizeof(trie_node));
                 }
 
                 int i;

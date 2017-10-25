@@ -41,15 +41,27 @@ int main (int argc, char* argv[])
     //if there is init file open it
     FILE* read_from=stdin;
     if(init_filename!=NULL){
-    //open the file and make the read_from this file
-    FILE* init_file = fopen(init_filename, "r");
-    if(init_file==NULL){
-        error_exit("Not good init File");
+        //open the file and make the init
+        FILE* init_file = fopen(init_filename, "r");
+        if(init_file==NULL){
+            error_exit("Not good init File");
+        }
+        init_filename=NULL;
+        while(1){
+            int chars_read=0;
+            chars_read=getline(&buf, &size, init_file);
+            if(chars_read>0){
+                buf[chars_read-1]='\0';//delete the \0
+                printf("---Add{%s}\n", buf);
+                insert_ngram(mytree, buf);
+            }else{
+                break;
+            }
+        }
+        fclose(init_file);
     }
-    init_filename=NULL;
-    read_from=init_file;
-    }else if(query_filename!=NULL){
-        //if there is no init file use the query file if exists ALONE
+    if(query_filename!=NULL){
+        //if there is query file
         FILE* query_file = fopen(query_filename, "r");
         if(query_file==NULL){
             error_exit("Not good query file");
@@ -66,23 +78,15 @@ int main (int argc, char* argv[])
     while(1){
         chars_read=getline(&buf, &size, read_from);
         if(chars_read==-1){
-            //or switch beetwen file to stdin
+            //exit or switch beetwen query file to stdin
             if(read_from==stdin){
                 printf("Bye\n");
                 //that means exit
                 break;
             }else{
-                // that means that we finshed with a file, but which?
+                // that means that we finshed with query file
                 fclose(read_from);
-                if(query_filename==NULL){
-                    read_from=stdin;
-                }else{
-                    read_from=fopen(query_filename, "r");
-                    if(read_from==NULL){
-                        read_from=stdin;
-                    }
-                    query_filename=NULL;
-                }
+                read_from=stdin;
                 continue;
             }
             //maybe we will need to excecute somthing like F first

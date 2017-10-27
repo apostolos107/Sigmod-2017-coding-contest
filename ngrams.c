@@ -101,9 +101,9 @@ int main (int argc, char* argv[])
             printf("---Question{%s}\n", the_word);
             result_of_search* result = search(mytree,the_word);
             if(result->num_of_results!=0){
-                printf("^^^[%s]\n",result->cur_word);
+                printf("===[%s]\n",result->cur_word);
             }else{
-                printf("^^^-1\n");
+                printf("===-1\n");
             }
             delete_result(&result);
         }else if(buf[0]=='A'){
@@ -117,6 +117,11 @@ int main (int argc, char* argv[])
 
         }else if(buf[0]=='F'){
             printf("---A wild F appeared\n");
+        }else if(buf[0]=='T'){
+            // trie_node* temp = mytree->root->children;
+            for (size_t i = 0; i < mytree->root->current_children; i++) {
+                printf("%4d)%s\n",i,mytree->root->children[i].word);
+            }
         }else{
             printf("---I don't know what is this{%s}{%d}\n",buf,chars_read);
         }

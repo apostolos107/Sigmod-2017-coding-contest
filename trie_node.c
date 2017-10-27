@@ -56,6 +56,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
             found_word = binary_search_kid(temp, word, &spot);
             if( found_word==-1)
             {/*add a new child at the {spot} position*/
+            printf("Spot is %d with word %s\n", spot, word);
                 // printf("Spot is %d\n", spot );
                 if(temp->current_children == temp->max_children)
                 {/*we need to give more space to our children's array*/
@@ -193,23 +194,16 @@ int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg){
     while((a <= b) && (a< master_node->current_children))
     {
         m = (a + b) /2;
-        // printf("M is %d\n", m);
         if ( strcmp(word, master_node->children[m].word) == 0)
         { /*this sentence exist as far as here*/
             spot = m;
             found_word =1;
-            // printf("i leksi %s ipirxe\n", word);
             break;
         }
         else if( strcmp(word, master_node->children[m].word) < 0)
         {/*word belongs before this child*/
-            if(m == 0)
-            {
-                spot = 0;
-                break;
-            }
             b = m-1;
-            spot = b;
+            spot = m;
         }
         else if( strcmp(word, master_node->children[m].word) > 0)
         {/*word belongs after this child*/

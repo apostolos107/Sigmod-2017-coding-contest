@@ -64,12 +64,11 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
                     temp->max_children *=2;
                     temp->children = realloc(temp->children, temp->max_children*sizeof(trie_node));
                 }
-
                 int i;
                 /*move the elements so we can make space for the new child*/
                 // for (i = temp->current_children-1; i >= spot; i--)
-                    memmove(&temp->children[spot+1], &temp->children[spot], (temp->current_children-spot)*sizeof(trie_node));
-                    // temp->children[i+1] = temp->children[i];
+                memmove(&temp->children[spot+1], &temp->children[spot], (temp->current_children-spot)*sizeof(trie_node));
+                // temp->children[i+1] = temp->children[i];
                 /*create the new child*/
                 init_trie_node(&temp->children[spot], temp);
                 temp->children[spot].word = copy_string(word);
@@ -99,7 +98,6 @@ OK_SUCCESS delete_node_child(trie_node* node,int position)
     /*fill the gap in the children array that created due to the removal*/
     /*delete the last child because it is dublicate*/
     if(node->current_children-1!=position && (node->current_children-1)>0){
-        printf("I am in \n" );
         memmove(&node->children[position], &node->children[position+1], (node->current_children-position-1)*sizeof(trie_node));
     }
     node->current_children--;
@@ -109,16 +107,15 @@ OK_SUCCESS delete_node_child(trie_node* node,int position)
 
 OK_SUCCESS trie_delete(trie_node* node,char* ngram)
 {
-    int position,found,depth_count=0;
+    int position,found,stack_count=0;
     int stack_size=count_words(ngram);
-    int* positions;
-    positions=malloc(stack_size*sizeof(int));
+    stack_node* stack;
+    stack=malloc(stack_size*sizeof(stack_node));
     trie_node* temp_trie_node;
-    trie_node* parent;
     temp_trie_node=node;
     char* word=strtok(ngram," ");
     if(word==NULL){
-        // free(stack);
+        free(stack);
         return -1;
     }
     while(1)
@@ -127,62 +124,58 @@ OK_SUCCESS trie_delete(trie_node* node,char* ngram)
         {/*end of N-gram*/
             break;
         }
-        if(depth_count>=stack_size){
-            printf("Stack Overflow\n");
-            free(positions);
-            return -1;
-        }
         found=binary_search_kid(temp_trie_node,word,&position);
         if(found==-1)
         {/*the requested N-Grams doesn't exist */
             printf("i leksi %s den iparxi\n", word);
-            free(positions);
+            free(stack);
             return -1 ;
         }
+        if(stack_count>=stack_size)
+        {
+            printf("There is overflow in stack\n" );
+            free(stack);
+            return -1;
+        }
+        stack[stack_count].node=temp_trie_node;
+        stack[stack_count].position=position;
+        stack_count++;
         temp_trie_node=&temp_trie_node->children[position];
-        positions[depth_count]=position;
-        depth_count++;
         /*get next word of our N-Gram*/
         word=strtok(NULL, " ");
     }
-    depth_count--;
-    parent=temp_trie_node->parent;
-    if(temp_trie_node->is_final=='Y')
+    stack_count--;
+    if(stack[stack_count].node->children[stack[stack_count].position].is_final=='Y')
     {/*It must be a final word*/
-        temp_trie_node->is_final='N';
-        if(temp_trie_node->current_children==0)
+        stack[stack_count].node->children[stack[stack_count].position].is_final='N';
+        if(stack[stack_count].node->children[stack[stack_count].position].current_children==0)
         {
-            printf("Delete %s\n",temp_trie_node->word );
-            delete_node_child(parent,positions[depth_count]);
+            printf("Delete %s\n",stack[stack_count].node->children[stack[stack_count].position].word );
+            delete_node_child(stack[stack_count].node,stack[stack_count].position);
         }
     }
     else
     {
         printf("It is not a Final\n");
-        free(positions);
+        free(stack);
         return -1;
     }
-    depth_count--;
-    while(depth_count>=0){
-        temp_trie_node=parent;
-        parent=temp_trie_node->parent;
+    stack_count--;
+    while(stack_count>=0){
         /*It is a middle word or the first*/
-        printf("Trying to delete %s\n",temp_trie_node->word );
-        if(temp_trie_node->current_children==0 && temp_trie_node->is_final!='Y')
+        printf("Trying to delete %s\n",stack[stack_count].node->children[stack[stack_count].position].word );
+        if(stack[stack_count].node->children[stack[stack_count].position].current_children==0 && stack[stack_count].node->children[stack[stack_count].position].is_final!='Y')
         {
             /*If there are not children and It is not a final*/
-            delete_node_child(parent,positions[depth_count]);
-            printf("Deleted\n");
-        }else{
-            break;
+            delete_node_child(stack[stack_count].node,stack[stack_count].position);
+            printf("deleted\n" );
         }
-        depth_count--;
+        stack_count--;
     }
-    free(positions);
+    free(stack);
     return 1;
 
 }
-//
 
 
 //binary search that returns the index in the array of the children

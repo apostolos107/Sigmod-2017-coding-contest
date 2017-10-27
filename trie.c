@@ -33,8 +33,7 @@ OK_SUCCESS trie_clean(trie* mytree){
 
 OK_SUCCESS delete_ngram(trie * my_trie, char * ngram)
 {
-    trie_node* root=my_trie->root;
-    return trie_delete(root,ngram);
+    return trie_delete(my_trie->root,ngram);
 }
 //
 // result_of_search* search(trie* my_trie,char* the_ngram)

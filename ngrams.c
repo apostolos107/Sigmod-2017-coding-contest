@@ -15,8 +15,11 @@ int main (int argc, char* argv[])
     trie * mytree = malloc(sizeof(trie));
     mytree->root = init_trie();
 
-    char* init_filename=NULL;
+    // char* init_filename="test_files/test1.init";
+    // char* query_filename="test_files/test1.work";
+
     char* query_filename=NULL;
+    char* init_filename=NULL;
 
     int i;
     for (i = 1; i < argc; i++) {

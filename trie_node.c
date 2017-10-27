@@ -17,11 +17,10 @@ trie_node* create_trie_node()
     node->max_children = NUMBER_OF_CHILDREN;
     node->word=NULL;
     node->children = malloc(node->max_children * sizeof(trie_node));
-    node->parent = NULL;
     return node;
 }
 
-void init_trie_node(trie_node * node, trie_node* parent)
+void init_trie_node(trie_node * node)
 {
     if(node == NULL)
         error_exit("Malloc Failure");
@@ -30,7 +29,6 @@ void init_trie_node(trie_node * node, trie_node* parent)
     node->current_children = 0;
     node->max_children = NUMBER_OF_CHILDREN;
     node->word=NULL;
-    node->parent = parent;
     node->children = malloc(node->max_children * sizeof(trie_node));
 }
 
@@ -46,7 +44,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
     {
         if(temp->current_children == 0 )
         { /*we need to add a new child cause this node has 0 of them */
-            init_trie_node(&temp->children[0], temp);
+            init_trie_node(&temp->children[0]);
             temp->children[0].word = copy_string(word);
             spot = 0;
             temp->current_children ++;
@@ -70,7 +68,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
                 memmove(&temp->children[spot+1], &temp->children[spot], (temp->current_children-spot)*sizeof(trie_node));
                 // temp->children[i+1] = temp->children[i];
                 /*create the new child*/
-                init_trie_node(&temp->children[spot], temp);
+                init_trie_node(&temp->children[spot]);
                 temp->children[spot].word = copy_string(word);
                 temp->current_children ++;
 

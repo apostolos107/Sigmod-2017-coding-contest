@@ -55,7 +55,7 @@ int main (int argc, char* argv[])
             chars_read=getline(&buf, &size, init_file);
             if(chars_read>0){
                 buf[chars_read-1]='\0';//delete the \0
-                printf("---Add{%s}\n", buf);
+                // printf("---Add{%s}\n", buf);
                 insert_ngram(mytree, buf);
             }else{
                 break;
@@ -83,7 +83,7 @@ int main (int argc, char* argv[])
         if(chars_read==-1){
             //exit or switch beetwen query file to stdin
             if(read_from==stdin){
-                printf("Bye\n");
+                // printf("Bye\n");
                 //that means exit
                 break;
             }else{
@@ -98,32 +98,33 @@ int main (int argc, char* argv[])
         buf[chars_read-1]='\0';
         if(buf[0]=='Q'){
             the_word=&buf[2];
-            printf("---Question{%s}\n", the_word);
+            // printf("---Question{%s}\n", the_word);
             result_of_search* result = search(mytree,the_word);
             if(result->num_of_results!=0){
-                printf("===[%s]\n",result->cur_word);
+                result->cur_word[strlen(result->cur_word)-1]='\0';
+                printf("====%s\n",result->cur_word);
             }else{
-                printf("===-1\n");
+                printf("====-1\n");
             }
             delete_result(&result);
         }else if(buf[0]=='A'){
             the_word= &buf[2];
-            printf("---Add{%s}\n", the_word);
+            // printf("---Add{%s}\n", the_word);
             insert_ngram(mytree, the_word);
         }else if(buf[0]=='D'){
             the_word= &buf[2];
-            printf("---Delete{%s}\n", the_word);
+            // printf("---Delete{%s}\n", the_word);
             delete_ngram(mytree, the_word);
 
         }else if(buf[0]=='F'){
-            printf("---A wild F appeared\n");
+            // printf("---A wild F appeared\n");
         }else if(buf[0]=='T'){
             // trie_node* temp = mytree->root->children;
             for (size_t i = 0; i < mytree->root->current_children; i++) {
                 printf("%4d)%s\n",i,mytree->root->children[i].word);
             }
         }else{
-            printf("---I don't know what is this{%s}{%d}\n",buf,chars_read);
+            // printf("---I don't know what is this{%s}{%d}\n",buf,chars_read);
         }
     }
     trie_clean(mytree);

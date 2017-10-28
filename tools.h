@@ -30,5 +30,5 @@ node_list* new_node_list(trie_node* trieNode,int position,node_list* previous);
 
 result_of_search* new_result(int size);
 void delete_result(result_of_search** result);
-void add_to_result(result_of_search* result,char* the_word);
+void add_to_result(result_of_search* result,char* the_word,char* first_word);
 #endif

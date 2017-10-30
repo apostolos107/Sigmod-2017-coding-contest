@@ -53,13 +53,19 @@ char* get_word(char* cur_ptr, char* original_ptr, int init_size){
         //         original_ptr[i]=' ';
         //     }
         // }
-        printf("end of word\n");
+        // printf("end of word\n");
+    }
+    int num_of_white_spaces=0;
+    while(temp[0]==' ' || temp[0]=='\t' || temp[0]=='\n'){
+        temp[0]='\0';
+        temp++;
+        num_of_white_spaces++;
     }
     while(temp[0]!=' ' && temp[0]!='\0'){
         temp++;
     }
     temp[0]='\0';
-    return cur_ptr;
+    return &cur_ptr[num_of_white_spaces];
 }
 
 result_of_search* search(trie* my_trie,char* the_ngram)

@@ -21,5 +21,14 @@ trie_node.o: trie_node.c
 tools.o: tools.c
 	$(CC) $(FLAGS) $?
 
+test: test_entry
+	./test_entry
+
+test_entry: test_entry.o trie.o trie_node.o tools.o
+	$(CC) -o $@ $?
+
+test_entry.o: test_entry.c
+	$(CC) $(FLAGS) $?
+
 clean:
 	rm -rf $(EXEC) $(OBJS)

@@ -35,6 +35,8 @@ void init_trie_node(trie_node * node)
 OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
 {
     trie_node * temp = node;
+    if(ngram == NULL || strcmp(ngram, "")==0)
+        return 1;
     char * word = strtok(ngram, " ");
 
     int a , b , m, found_word;

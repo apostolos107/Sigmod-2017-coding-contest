@@ -126,7 +126,7 @@ int main (int argc, char* argv[])
             printf("---I don't know what is this{%s}{%d}\n",buf,chars_read);
         }
     }
-    trie_clean(mytree);
+    trie_clean(&mytree);
 //free whateve is allocated
     free(buf);
     return 0;

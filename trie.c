@@ -24,10 +24,11 @@ OK_SUCCESS insert_ngram(trie * my_trie, char * ngram)
     return insert_ngram_to_node(my_trie->root, ngram);
 }
 
-OK_SUCCESS trie_clean(trie* mytree){
-    trie_node_clean(mytree->root);
-    free(mytree->root);
-    free(mytree);
+OK_SUCCESS trie_clean(trie** mytree){
+    trie_node_clean((*mytree)->root);
+    free((*mytree)->root);
+    free(*mytree);
+    *mytree=NULL;
     return 1;
 }
 

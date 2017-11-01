@@ -3,8 +3,13 @@ OBJS = ngrams.o trie.o trie_node.o tools.o
 EXEC =NGrams.exe
 CC	= gcc
 FLAGS   = -g -c
-
+FILES_FOLDER = test_files
 all: clean $(EXEC)
+
+test_file: all
+	time ./$(EXEC) -i $(FILES_FOLDER)/$(file).init -q $(FILES_FOLDER)/$(file).work > out << -EOF
+	diff ./out $(FILES_FOLDER)/$(file).result
+
 
 $(EXEC): $(OBJS)
 	$(CC) -g $? -o $@

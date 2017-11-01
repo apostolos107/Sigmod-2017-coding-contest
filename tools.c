@@ -86,7 +86,8 @@ int word_exists(result_of_search *result, char* first_word, char* last_word){
             char* current_word=first_word;
             while( current_word[0]==' ' || current_word[0]=='\0'){
                 //maybe it needs this && current_word<last_word
-                sleep(5);
+                //it will never be excecuted because current==first
+                // sleep(5);
                 current_word++;
             }
 

@@ -5,6 +5,9 @@
 #include "tools.h"
 #include "trie_node.h"
 
+#define INITIAL_RESULT_SIZE 1024 //the size of the string that holds the result
+#define COPY_ON_SEARCH 0 //if we will copy the string on search
+
 trie_node * init_trie()
 {
     trie_node * node = create_trie_node();
@@ -71,10 +74,15 @@ char* get_word(char* cur_ptr, char* original_ptr, int init_size){
 
 result_of_search* search(trie* my_trie,char* the_ngram)
 {
-    char* current_sub_str=copy_string(the_ngram);//copy the string and start from the begining
+    #if COPY_ON_SEARCH==0
+        char* current_sub_str=the_ngram;//just get the pointer to the initial string
+    #else
+        char* current_sub_str=copy_string(the_ngram);//copy the string and start from the begining
+    #endif
+
     char* copied_string=current_sub_str;//holds the beggin of the string so we can free
     int original_size = strlen(current_sub_str);
-    result_of_search* result = new_result(1024);
+    result_of_search* result = new_result(INITIAL_RESULT_SIZE);
 
 
     while(current_sub_str[0]!='\0'){
@@ -147,6 +155,9 @@ result_of_search* search(trie* my_trie,char* the_ngram)
             }
         }
     }
-    free(copied_string);
+    #if COPY_ON_SEARCH!=0
+        free(copied_string);//nessasery only if the string is beeing copied
+    #endif
+
     return result;
 }

@@ -50,16 +50,13 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
             temp->children[0].word = copy_string(word);
             spot = 0;
             temp->current_children ++;
-            // printf("prosthetw tin leksi %s afou exei 0 paidia\n", word);
-
+            // printf("We added the word %s because the word before has no children\n", word);
         }
         else
         {
             found_word = binary_search_kid(temp, word, &spot);
             if( found_word==-1)
             {/*add a new child at the {spot} position*/
-            // printf("Spot is %d with word %s\n", spot, word);
-                // printf("Spot is %d\n", spot );
                 if(temp->current_children == temp->max_children)
                 {/*we need to give more space to our children's array*/
                     temp->max_children *=2;
@@ -67,17 +64,14 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
                 }
                 int i;
                 /*move the elements so we can make space for the new child*/
-                // for (i = temp->current_children-1; i >= spot; i--)
                 memmove(&temp->children[spot+1], &temp->children[spot], (temp->current_children-spot)*sizeof(trie_node));
-                // temp->children[i+1] = temp->children[i];
                 /*create the new child*/
                 init_trie_node(&temp->children[spot]);
                 temp->children[spot].word = copy_string(word);
                 temp->current_children ++;
 
-                // printf("prosthetw tin leksi %s \n", word);
+                // printf("added the word %s \n", word);
             }
-
         }
 
         word = strtok(NULL, " ");
@@ -90,7 +84,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
         temp = &temp->children[spot];
     }
 }
-//
+
 OK_SUCCESS delete_node_child(trie_node* node,int position)
 {   /* free the child */
     free(node->children[position].children);

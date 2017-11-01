@@ -14,8 +14,8 @@ typedef struct trie_node{
     struct trie_node* children;
 }trie_node;
 
-
 trie_node* create_trie_node();
+void init_trie_node(trie_node * node);
 OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram);
 OK_SUCCESS trie_delete(trie_node* node,char* ngram);
 OK_SUCCESS delete_node_child(trie_node* node,int position);

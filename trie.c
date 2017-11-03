@@ -89,7 +89,6 @@ result_of_search* search(trie* my_trie,char* the_ngram)
     //while you don't have just a space or just a \0
 
 /***********************search for this ngram*************/
-        int offset=0;//it's the offset of the current_sub_str to the word we are now
         // printf("Search for{%s}\n",current_sub_str);
         //get pointer to the begginig of the current word until the end
         char* search_for=current_sub_str;
@@ -98,7 +97,6 @@ result_of_search* search(trie* my_trie,char* the_ngram)
         char* thread_safe=NULL;//for strtok_r
         char* current_word;//the current word form iteration
         current_word=get_word(search_for,copied_string,original_size);
-        offset+=strlen(current_word);
         //while we have nodes and the word is not finished
         while(cur_node->word!=NULL && current_word!=NULL){
             int spot_of_word,return_value;
@@ -121,9 +119,6 @@ result_of_search* search(trie* my_trie,char* the_ngram)
             }
 
             current_word=get_word(&current_word[strlen(current_word)+1], copied_string, original_size);
-            if(current_word!=NULL){
-                offset+=strlen(current_word)+1;//for the space
-            }
             //go deeper
             // printf("\n---\n" );
         }

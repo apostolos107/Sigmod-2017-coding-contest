@@ -76,22 +76,17 @@ int word_exists(result_of_search *result, char* first_word, char* last_word){
     char* temp;
     //find the first word
     // printf("\t===searching for {%s}...{%s} in {%s}\n",first_word,last_word,result->cur_word );
-    first_word=eat_empty(first_word);
-    temp=strstr(result->cur_word, first_word);
-    while(temp!=NULL){
+    first_word=eat_empty(first_word);//deletes trailing white spaces
+    temp=strstr(result->cur_word, first_word);//find the first word if exists somewhere in the result
+    while(temp!=NULL){//if we found it check if the rest of the string is there also
+        //it checks only the word, not if after we have a space or before we have a start of n-gram
         //if it's the first word or the previous char is | (start of ngram)
         if(temp== result->cur_word || temp[-1]=='|'){
             // printf("===found strstr\n");
             int found = 0;//we start from 0 if it never gets in the loop it's false
             char* current_word=first_word;
-            while( current_word[0]==' ' || current_word[0]=='\0'){
-                //maybe it needs this && current_word<last_word
-                //it will never be excecuted because current==first
-                // sleep(5);
-                current_word++;
-            }
 
-            while(current_word<=last_word){
+            while(current_word<=last_word){//check if every word exists
                 if(current_word[0]==' '|| current_word[0]=='\0'){
                     current_word++;
                     continue;
@@ -103,16 +98,14 @@ int word_exists(result_of_search *result, char* first_word, char* last_word){
                 if( strncmp(current_word,temp , word_size)==0 ){
                     //if the word is ok (we must check the next char in the result)
                     if(temp[word_size]=='\0'){
-                        //this should never happen
-                        // sleep(5);
                         exit(-1);
                     }else if (temp[word_size]==' '){
                         //everything is ok
-                        //we matched the word and the next char is space so we are ok to check the next word if exists
-
+                        //we matched the word and the next char is space
+                        // so we are ok to check the next word if exists
                     }else if(temp[word_size]=='|'){
-                        //the word is ok but we must break cause there is no next word
-                        temp+=word_size+1;//go to the next word in the already result
+                        //the word is ok but we must break cause there is no next word in the result ngram
+                        temp+=word_size+1;//go to the next word in the result
 
                         break;
                     }else{
@@ -145,8 +138,6 @@ int word_exists(result_of_search *result, char* first_word, char* last_word){
         temp=strstr(temp, first_word);//find if there is next
 
     }
-        //check the next one
-        //if all exists and next symbol is |
     return 0;
 }
 
@@ -154,7 +145,7 @@ void add_to_result(result_of_search* result,char* the_word,char* first_word){
     result->num_of_results++;
     int bytes_wrote;
     // printf("{%s}->{%s}\t{%s}[%d]\n",first_word,the_word,result->cur_word,result->current_wrote);
-    int exists = word_exists(result,first_word,the_word);
+    int exists = word_exists(result,first_word,the_word);//checks if the word exists already on the result
     if(exists==1){
         // printf("---------------------\n");
         // printf("\nNO ADD {%s}->{%s}\t{%s}[%d]\n",first_word,the_word,result->cur_word,result->current_wrote);
@@ -167,14 +158,14 @@ void add_to_result(result_of_search* result,char* the_word,char* first_word){
         // printf("---------------------\n");
         // printf("\t===no\n" );
     }
-    while(first_word<=the_word){
+    while(first_word<=the_word){//for every word until the last one
         // printf("$$$%s\n",first_word);
         int size_of_word = strlen(first_word);
-        if(size_of_word==0){
-            first_word++;
+        if(size_of_word==0){//if it's an empty word (a space)
+            first_word++;//start from next char
             continue;
         }
-        while( size_of_word + 2 + result->current_wrote > result->current_size){
+        while( size_of_word + 2 + result->current_wrote > result->current_size){//if we need to realloc
             // printf("we need to realloc %d->%d(+%d)\n",result->current_size,2*result->current_size,size_of_word );
             //we need to make it bigger
             result->current_size*=2;
@@ -183,15 +174,15 @@ void add_to_result(result_of_search* result,char* the_word,char* first_word){
                 error_exit("Realloc faile in tools add_to_result");
             }
         }
-        strcpy(&result->cur_word[result->current_wrote],first_word);
+        strcpy(&result->cur_word[result->current_wrote],first_word);//copy the word
         result->current_wrote+=size_of_word+1;
         result->cur_word[result->current_wrote-1]=' ';//instead of '\0' add space
         first_word+=size_of_word+1;//go to the next word
     }
     // printf("!!!%s\n",result->cur_word);
-    result->cur_word[result->current_wrote-1]='|';
+    result->cur_word[result->current_wrote-1]='|';//add the ending chars
     result->cur_word[result->current_wrote]='\0';
-    result->current_wrote+=0;
+    result->current_wrote+=0;//do nothing :P
 }
 
 node_list* create_list(){

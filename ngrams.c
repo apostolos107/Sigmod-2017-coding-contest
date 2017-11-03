@@ -12,11 +12,9 @@ int main (int argc, char* argv[])
     size_t size=CHAR_BUFFER_SIZE;
 
     buf = malloc(sizeof(char)*size);//alocate memory for the buffer that
-    trie * mytree = malloc(sizeof(trie));
-    mytree->root = init_trie();
+    trie * my_triee = malloc(sizeof(trie));
+    my_triee->root = init_trie();
 
-    // char* init_filename="test_files/test1.init";
-    // char* query_filename="test_files/test1.work";
 
     char* query_filename=NULL;
     char* init_filename=NULL;
@@ -56,7 +54,7 @@ int main (int argc, char* argv[])
             if(chars_read>0){
                 buf[chars_read-1]='\0';//delete the \0
                 // printf("---Add{%s}\n", buf);
-                insert_ngram(mytree, buf);
+                insert_ngram(my_triee, buf);
             }else{
                 break;
             }
@@ -99,7 +97,7 @@ int main (int argc, char* argv[])
         if(buf[0]=='Q'){
             the_word=&buf[2];
             // printf("---Question{%s}\n", the_word);
-            result_of_search* result = search(mytree,the_word);
+            result_of_search* result = search(my_triee,the_word);
             if(result->num_of_results!=0){
                 result->cur_word[strlen(result->cur_word)-1]='\0';
                 // printf("====%s\n",result->cur_word);
@@ -112,23 +110,18 @@ int main (int argc, char* argv[])
         }else if(buf[0]=='A'){
             the_word= &buf[2];
             // printf("---Add{%s}\n", the_word);
-            insert_ngram(mytree, the_word);
+            insert_ngram(my_triee, the_word);
         }else if(buf[0]=='D'){
             the_word= &buf[2];
             // printf("---Delete{%s}\n", the_word);
-            delete_ngram(mytree, the_word);
+            delete_ngram(my_triee, the_word);
 
         }else if(buf[0]=='F'){
             // printf("---A wild F appeared\n");
-        }else if(buf[0]=='T'){
-            // trie_node* temp = mytree->root->children;
-            for (size_t i = 0; i < mytree->root->current_children; i++) {
-                // printf("%4d)%s\n",i,mytree->root->children[i].word);
-            }
         }
     }
-    trie_clean(&mytree);
-//free whateve is allocated
+    trie_clean(&my_triee);
+//free whatever is allocated
     free(buf);
     return 0;
 }

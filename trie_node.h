@@ -23,6 +23,7 @@ OK_SUCCESS delete_node_child(trie_node* node,int position);
 /*  binary search that returns 1 if word found and -1 if not found
     if it's not NULL contains the spot that the search stoped
     the third argument can be NULL*/
+int binary_search_array(trie_node* array, int size, char* word, int* spot_ptr_arg);
 int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg);
 OK_SUCCESS trie_node_clean(trie_node* node);
 #endif

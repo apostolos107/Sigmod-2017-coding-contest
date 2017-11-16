@@ -173,36 +173,34 @@ OK_SUCCESS trie_delete(trie_node* node,char* ngram)
 
 }
 
-
-//binary search that returns the index in the array of the children
-int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg){
+int binary_search_array(trie_node* array, int size, char* word, int* spot_ptr_arg){
     int spot = 0;//the current spot
     int a = 0;//the base index in array
-    int b = master_node->current_children;//the max index in array
+    int b = size;//the max index in array
     int found_word = 0;//bool, 1 if found
     int m;//the middle of hte [a,b]
-    if(master_node->current_children==0){
+    if(size==0){
         //if no childrens
         if(spot_ptr_arg!=NULL){
             *spot_ptr_arg=0;
         }
         return -1;
     }
-    while((a <= b) && (a< master_node->current_children))
+    while((a <= b) && (a< size))
     {
         m = (a + b) /2;
-        if ( strcmp(word, master_node->children[m].word) == 0)
+        if ( strcmp(word, array[m].word) == 0)
         { /*this sentence exist as far as here*/
             spot = m;
             found_word =1;
             break;
         }
-        else if( strcmp(word, master_node->children[m].word) < 0)
+        else if( strcmp(word, array[m].word) < 0)
         {/*word belongs before this child*/
             b = m-1;
             spot = m;
         }
-        else if( strcmp(word, master_node->children[m].word) > 0)
+        else if( strcmp(word, array[m].word) > 0)
         {/*word belongs after this child*/
             a = m+1;
             spot = a;
@@ -218,6 +216,11 @@ int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg){
     }else{
         return 1;
     }
+}
+
+//binary search that returns the index in the array of the children
+int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg){
+    return binary_search_array(master_node->children, master_node->current_children, word, spot_ptr_arg);
 }
 
 OK_SUCCESS trie_node_clean(trie_node* node){

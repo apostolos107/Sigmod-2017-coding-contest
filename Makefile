@@ -1,5 +1,5 @@
-SOURCE = ngrams.c trie.c trie_node.c tools.c
-OBJS = ngrams.o trie.o trie_node.o tools.o
+SOURCE = ngrams.c trie.c hash_table.c trie_node.c tools.c
+OBJS = ngrams.o trie.o hash_table.o trie_node.o tools.o
 EXEC =NGrams.exe
 CC	= gcc
 FLAGS   = -g -c
@@ -15,6 +15,9 @@ $(EXEC): $(OBJS)
 	$(CC) -g $? -o $@
 
 ngrams.o: ngrams.c
+	$(CC) $(FLAGS) $?
+
+hash_table.o: hash_table.c
 	$(CC) $(FLAGS) $?
 
 trie.o: trie.c

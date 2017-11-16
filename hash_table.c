@@ -33,7 +33,7 @@ hash_table * create_hash_table()
     table->size = HASH_START_SIZE;
     table->mod_value =HASH_START_SIZE;
 
-    table->buckets = malloc(HASH_START_SIZE * sizeof(sizeof(hash_bucket)));
+    table->buckets = malloc(HASH_START_SIZE * sizeof(hash_bucket));
     int i;
     for(i=0; i<HASH_START_SIZE; i++)
         create_hash_node(&table->buckets[i]);
@@ -160,6 +160,26 @@ trie_node * hash_search(hash_table * table, char * word)
 
 int hash_delete(hash_table * table, char * word)
 {
+    unsigned long code = hash_word(word);
+    int position = hash_round(code, table->mod_value);
+    if (position < table->current_breaking)
+    {
+        position = hash_round(code, table->mod_value *2);
+    }
+
+    return hash_bucket_delete(&table->buckets[position], word);
+}
+
+int hash_bucket_delete(hash_bucket * bucket, char * word)
+{
+    int i;
+    int spot, found;
+    found = binary_search_array(bucket->children, bucket->current_children, word, &spot);
+    if(found)
+    {
+
+    }
+    
 }
 
 void hash_clean(hash_table ** table)

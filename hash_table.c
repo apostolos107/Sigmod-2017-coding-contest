@@ -184,4 +184,17 @@ int hash_delete(hash_table * table, char * word)
 
 void hash_clean(hash_table ** table)
 {
+    hash_table* my_table = *table;
+    int i;
+    for (i = 0; i < my_table->size; i++) {
+        //for each bucket in the table
+        hash_bucket* cur_bucket = &my_table->buckets[i];
+        int j;
+        for ( j = 0; j < cur_bucket->current_children; j++) {
+            free(cur_bucket->children[i].children);
+            free(cur_bucket->children[i].word);
+        }
+    }
+
+    free(*table);
 }

@@ -65,6 +65,7 @@ trie_node * hash_bucket_insert(hash_table * table, int pos, char * word)
     hash_bucket * current_bucket = &table->buckets[pos];
     if(current_bucket->children == NULL)
     {
+        current_bucket->current_children++;
         current_bucket->children = malloc(BUCKET_START_SIZE*sizeof(trie_node));
         init_trie_node(&current_bucket->children[0]);
         table->buckets[pos].children[0].word = copy_string(word);
@@ -160,15 +161,15 @@ trie_node * hash_search(hash_table * table, char * word)
     int bucket_pos = hash_round(word_hash,table->mod_value);
     if(bucket_pos < table->current_breaking){
         //if it belongs to one of the buckets that has been split
-        bucket_pos = hash_round(bucket_pos, table->mod_value*2);
+        bucket_pos = hash_round(word_hash, table->mod_value*2);
     }
     //the bucket that it supose to be
     hash_bucket* cur_bucket = &table->buckets[bucket_pos];
     int pos,found;
 
     //do binary search in the array
+    printf("%d\n",cur_bucket->current_children );
     found = binary_search_array(cur_bucket->children, cur_bucket->current_children, word, &pos);
-
     if(found==1){
         //if found return the trie_node
         return &cur_bucket->children[pos];

@@ -31,7 +31,7 @@ hash_table * create_hash_table()
     table->current_breaking = 0;
     table->round = 0;
     table->size = HASH_START_SIZE;
-    table->mod_value =HASH_START_SIZE;
+    table->mod_value = HASH_START_SIZE;
 
     table->buckets = malloc(HASH_START_SIZE * sizeof(hash_bucket));
     int i;
@@ -156,6 +156,26 @@ int expand_hash_table(hash_table * table)
 
 trie_node * hash_search(hash_table * table, char * word)
 {
+    unsigned long word_hash = hash_word(word);
+    int bucket_pos = hash_round(word_hash,table->mod_value);
+    if(bucket_pos < table->current_breaking){
+        //if it belongs to one of the buckets that has been split
+        bucket_pos = hash_round(bucket_pos, table->mod_value*2);
+    }
+    //the bucket that it supose to be
+    hash_bucket* cur_bucket = &table->buckets[bucket_pos];
+    int pos,found;
+
+    //do binary search in the array
+    found = binary_search_array(cur_bucket->children, cur_bucket->current_children, word, &pos);
+
+    if(found==1){
+        //if found return the trie_node
+        return &cur_bucket->children[pos];
+    }else{
+        return NULL;
+    }
+
 }
 
 int hash_delete(hash_table * table, char * word)
@@ -184,4 +204,17 @@ int hash_bucket_delete(hash_bucket * bucket, char * word)
 
 void hash_clean(hash_table ** table)
 {
+    hash_table* my_table = *table;
+    int i;
+    for (i = 0; i < my_table->size; i++) {
+        //for each bucket in the table
+        hash_bucket* cur_bucket = &my_table->buckets[i];
+        int j;
+        for ( j = 0; j < cur_bucket->current_children; j++) {
+            free(cur_bucket->children[i].children);
+            free(cur_bucket->children[i].word);
+        }
+    }
+
+    free(*table);
 }

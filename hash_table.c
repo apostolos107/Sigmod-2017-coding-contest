@@ -20,7 +20,7 @@ unsigned long hash_word(char * str)
 
 int hash_round(unsigned long code, int mod_value)
 {
-    return (int) code%mod_value;
+    return (int) (code%mod_value);
 }
 
 hash_table * create_hash_table()
@@ -32,12 +32,12 @@ hash_table * create_hash_table()
     table->round = 0;
     table->size = HASH_START_SIZE;
     table->mod_value =HASH_START_SIZE;
-
-    table->buckets = malloc(HASH_START_SIZE * sizeof(sizeof(hash_bucket)));
+    table->buckets = malloc(HASH_START_SIZE *sizeof(hash_bucket));
     int i;
-    for(i=0; i<HASH_START_SIZE; i++)
+    for(i=0; i<HASH_START_SIZE; i++){
         create_hash_node(&table->buckets[i]);
-
+    }
+    return table;
 }
 
 void create_hash_node(hash_bucket * node)
@@ -130,7 +130,7 @@ int expand_hash_table(hash_table * table)
             if(new_bucket->current_children == new_bucket->max_children)
             {   /* we need to resize our new_bucket cause we have more elements */
                 new_bucket->max_children+=BUCKET_START_SIZE;
-                new_bucket=realloc(new_bucket->children, new_bucket->max_children);
+                new_bucket->children=realloc(new_bucket->children, sizeof(trie_node)*new_bucket->max_children);
             }
             memcpy(&new_bucket->children[new_bucket->current_children],&breaking_bucket->children[i],sizeof(trie_node));
 

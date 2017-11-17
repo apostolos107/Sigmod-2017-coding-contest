@@ -5,11 +5,11 @@
 #include "tools.h"
 
 typedef struct trie{
-    trie_node* root;
+    hash_table * children;
 }trie;
 
 
-trie_node * init_trie();
+trie * init_trie();
 OK_SUCCESS insert_ngram(trie * my_trie, char * ngram);
 
 OK_SUCCESS trie_clean(trie** my_trie);

@@ -4,6 +4,7 @@
 
 #include "trie.h"
 #include "tools.h"
+// #include "hash_table.h"
 
 trie_node* create_trie_node()
 {
@@ -35,10 +36,13 @@ void init_trie_node(trie_node * node)
 OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
 {
     trie_node * temp = node;
-    if(ngram == NULL || strcmp(ngram, "")==0)
-        return 1;
-    char * word = strtok(ngram, " ");
 
+    char * word = strtok(NULL, " ");
+    if( word == NULL )
+    {
+        node->is_final = 'Y';
+        return 1;
+    }
     int a , b , m, found_word;
     int spot=0;
 
@@ -63,6 +67,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
                     temp->children = realloc(temp->children, temp->max_children*sizeof(trie_node));
                 }
                 int i;
+                printf("%s\n",word );
                 /*move the elements so we can make space for the new child*/
                 memmove(&temp->children[spot+1], &temp->children[spot], (temp->current_children-spot)*sizeof(trie_node));
                 /*create the new child*/
@@ -100,7 +105,7 @@ OK_SUCCESS delete_node_child(trie_node* node,int position)
     return 1;
 }
 
-OK_SUCCESS trie_delete(trie_node* node,char* ngram)
+OK_SUCCESS trie_delete(hash_table* table,char* ngram)
 {
     int position,found,stack_count=0;
     int stack_size=count_words(ngram);
@@ -109,16 +114,30 @@ OK_SUCCESS trie_delete(trie_node* node,char* ngram)
     stack=malloc(stack_size*sizeof(stack_node));
 
     trie_node* temp_trie_node;
-    temp_trie_node=node;
+    trie_node* hash_node;
     //if the word is null return
     if(ngram == NULL || strcmp(ngram, "")==0)
+    {
+        free(stack);
         return -1;
-
+    }
+    char* hash_word;
     char* word=strtok(ngram," ");
     if(word==NULL){
         free(stack);
         return -1;
     }
+
+    hash_word=malloc((strlen(word)+1)*sizeof(char));
+    strcpy(hash_word, word);
+    hash_node=hash_search(table, word);
+    if(hash_node==NULL){
+        free(hash_word);
+        free(stack);
+        return-1;
+    }
+    word=strtok(NULL, " ");
+    temp_trie_node=hash_node;
     //traverse the trie
     while(1)
     {
@@ -129,11 +148,13 @@ OK_SUCCESS trie_delete(trie_node* node,char* ngram)
         found=binary_search_kid(temp_trie_node,word,&position);
         if(found==-1)
         {/*the requested N-Grams doesn't exist */
+            free(hash_word);
             free(stack);
             return -1 ;
         }
         if(stack_count>=stack_size)
         {
+            free(hash_word);
             free(stack);
             return -1;
         }
@@ -145,20 +166,46 @@ OK_SUCCESS trie_delete(trie_node* node,char* ngram)
         word=strtok(NULL, " ");
     }
     stack_count--;
-    if(stack[stack_count].node->children[stack[stack_count].position].is_final=='Y')
-    {/*It must be a final word*/
-        stack[stack_count].node->children[stack[stack_count].position].is_final='N';
-        if(stack[stack_count].node->children[stack[stack_count].position].current_children==0)
-        {//if it does not have children delete the node
-            delete_node_child(stack[stack_count].node,stack[stack_count].position);
+    if(stack_count>=0){
+        if(stack[stack_count].node->children[stack[stack_count].position].is_final=='Y')
+        {/*It must be a final word*/
+            stack[stack_count].node->children[stack[stack_count].position].is_final='N';
+            if(stack[stack_count].node->children[stack[stack_count].position].current_children==0)
+            {//if it does not have children delete the node
+                delete_node_child(stack[stack_count].node,stack[stack_count].position);
+            }
+            else
+            {
+                free(hash_word);
+                free(stack);
+                return 1;
+            }
         }
+        else
+        {
+            free(hash_word);
+            free(stack);
+            return -1;
+        }
+        stack_count--;
     }
     else
     {
+        if(hash_node->is_final=='Y')
+        {
+            hash_node->is_final='N';
+            if(hash_node->current_children==0)
+            {
+                int return_value= hash_delete(table, hash_word);
+                free(hash_word);
+                free(stack);
+                return return_value;
+            }
+        }
+        free(hash_word);
         free(stack);
         return -1;
     }
-    stack_count--;
     while(stack_count>=0){
         /*It is a middle word or the first*/
         if(stack[stack_count].node->children[stack[stack_count].position].current_children==0 && stack[stack_count].node->children[stack[stack_count].position].is_final!='Y')
@@ -166,8 +213,22 @@ OK_SUCCESS trie_delete(trie_node* node,char* ngram)
             /*If there are not children and It is not a final*/
             delete_node_child(stack[stack_count].node,stack[stack_count].position);
         }
+        else
+        {
+            free(hash_word);
+            free(stack);
+            return 1;
+        }
         stack_count--;
     }
+    if(hash_node->current_children==0)
+    {
+        int return_value= hash_delete(table, hash_word);
+        free(hash_word);
+        free(stack);
+        return return_value;
+    }
+    free(hash_word);
     free(stack);
     return 1;
 

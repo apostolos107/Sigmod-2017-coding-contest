@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "hash_table.h"
 #include "trie_node.h"
 #include "tools.h"
+
 /*   sdbm hash function from:
     http://www.cse.yorku.ca/~oz/hash.html */
 unsigned long hash_word(char * str)
@@ -200,7 +200,7 @@ int hash_bucket_delete(hash_bucket * bucket, char * word)
         free(bucket->children[spot].word);
         free(bucket->children[spot].children);
         if( (bucket->current_children-1)!=spot && (bucket->current_children-1)>0 ){
-            memmove(&bucket->children[spot],&bucket->children[spot+1],(bucket->current_children-spot)*sizeof(trie_node));
+            memmove(&bucket->children[spot],&bucket->children[spot+1],(bucket->current_children-spot-1)*sizeof(trie_node));
         }
         bucket->current_children--;
         return 1;

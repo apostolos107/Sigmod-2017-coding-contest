@@ -31,6 +31,7 @@ int expand_hash_table(hash_table * table);
 trie_node * hash_search(hash_table * table, char * word);
 int hash_delete(hash_table * table, char * word);
 void hash_clean(hash_table ** table);
-
+int hash_bucket_delete(hash_bucket * bucket, char * word);
+int hash_delete(hash_table * table, char * word);
 
 #endif

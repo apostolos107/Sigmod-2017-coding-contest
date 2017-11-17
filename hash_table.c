@@ -168,7 +168,6 @@ trie_node * hash_search(hash_table * table, char * word)
     int pos,found;
 
     //do binary search in the array
-    printf("%d\n",cur_bucket->current_children );
     found = binary_search_array(cur_bucket->children, cur_bucket->current_children, word, &pos);
     if(found==1){
         //if found return the trie_node
@@ -181,8 +180,49 @@ trie_node * hash_search(hash_table * table, char * word)
 
 int hash_delete(hash_table * table, char * word)
 {
+    unsigned long code = hash_word(word);
+    int position = hash_round(code, table->mod_value);
+    if (position < table->current_breaking)
+    {
+        position = hash_round(code, table->mod_value *2);
+    }
+
+    return hash_bucket_delete(&table->buckets[position], word);
+}
+
+int hash_bucket_delete(hash_bucket * bucket, char * word)
+{
+    int i;
+    int spot, found;
+    found = binary_search_array(bucket->children, bucket->current_children, word, &spot);
+    if(found==1)
+    {
+        free(bucket->children[spot].word);
+        free(bucket->children[spot].children);
+        if( (bucket->current_children-1)!=spot && (bucket->current_children-1)>0 ){
+            memmove(&bucket->children[spot],&bucket->children[spot+1],(bucket->current_children-spot)*sizeof(trie_node));
+        }
+        bucket->current_children--;
+        return 1;
+    }
+    return -1;
 }
 
 void hash_clean(hash_table ** table)
 {
+    hash_table* my_table = *table;
+    int i;
+    for (i = 0; i < my_table->size; i++) {
+        //for each bucket in the table
+        hash_bucket* cur_bucket = &my_table->buckets[i];
+        int j;
+        for ( j = 0; j < cur_bucket->current_children; j++) {
+            free(cur_bucket->children[j].word);
+            free(cur_bucket->children[j].children);
+        }
+        free(cur_bucket->children);
+    }
+
+    free(my_table->buckets);
+    free(*table);
 }

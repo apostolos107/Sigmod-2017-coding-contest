@@ -1,5 +1,5 @@
-SOURCE = ngrams.c trie.c trie_node.c tools.c
-OBJS = ngrams.o trie.o trie_node.o tools.o
+SOURCE = ngrams.c trie.c trie_node.c tools.c heap.c
+OBJS = ngrams.o trie.o trie_node.o tools.o heap.o
 EXEC =NGrams.exe
 CC	= gcc
 FLAGS   = -g -c
@@ -24,6 +24,9 @@ trie_node.o: trie_node.c
 	$(CC) $(FLAGS) $?
 
 tools.o: tools.c
+	$(CC) $(FLAGS) $?
+
+heap.o: heap.c
 	$(CC) $(FLAGS) $?
 
 test: test_entry

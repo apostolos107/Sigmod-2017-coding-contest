@@ -87,6 +87,7 @@ void heapify(heap* the_heap, heap_node* start_node){
 }
 
 heap_node* heap_insert(heap* the_heap, char* word){
+    int last_step;
     heap_node* cur_node;
     if (the_heap->number_of_nodes==0){
         //if it's the first node in the heap
@@ -96,35 +97,13 @@ heap_node* heap_insert(heap* the_heap, char* word){
         the_heap->number_of_nodes++;
         return cur_node;
     }
-
-//we calculate the best path trhough this algorithm
-    int int_cur_node;//a var to help calculate the path
-    int step[MAX_DEPTH];//a stack like array
-    int depth=0;//stack gia tis kinhseis anadromika
-
-    int_cur_node=the_heap->number_of_nodes+1;//start from the first free
-    while(int_cur_node>1){
-        step[depth]=int_cur_node%2;//1 means right , 0 means left
-        int_cur_node=int_cur_node/2;//do the same for the parent
-        depth++;
-    }
-//we have find the path and now we must go to the node
-    int i;
-    cur_node=the_heap->root;//begin from the root
-    for(i=depth-1;i>0;i--){//for all (exept the first one)
-        if(step[i]==0){
-            cur_node=cur_node->left;
-        }else{
-            cur_node=cur_node->right;
-        }
-    }
-
+    cur_node=find_the_parent(the_heap,&last_step,the_heap->number_of_nodes+1);
     heap_node *new_node=create_node();//create the new node
     new_node->parrent=cur_node;
     new_node->content=copy_string(word);
-    if(step[i]==0){
+    if(last_step==0){
         cur_node->left=new_node;
-    }else if(step[i]==1){
+    }else if(last_step==1){
         cur_node->right=new_node;
     }
     the_heap->number_of_nodes++;
@@ -132,6 +111,77 @@ heap_node* heap_insert(heap* the_heap, char* word){
     return new_node;
 }
 
-heap_search(heap* the_heap, char* word){
+char* heap_get_top(heap* the_heap)
+{
+    //find the last node
+    int last_step;
+    heap_node* first_node=the_heap->root;
+    heap_node* last_node=find_the_parent(the_heap,&last_step,the_heap->number_of_nodes);
+    if(last_step  == 1)
+    {
+        last_node=last_node->right;
+    }
+    else if(last_step == 0)
+    {
+        last_node=last_node->left;
+    }
+    //swap the first with the last
+    first_node->parrent = last_node->parrent;
+    last_node->parrent = NULL;
+    last_node->left = first_node->left;
+    last_node->right = first_node->right;
+    first_node->right = NULL ;
+    first_node-> left = NULL ;
 
+    char* return_string;
+    return_string = malloc((strlen(first_node->content)+1)*sizeof(char));
+    strcpy(return_string, first_node->content);
+
+    //delete the last node (it was the first)
+    if(last_step  == 1)
+    {
+        first_node->parrent->right = NULL;
+    }
+    else if(last_step == 0)
+    {
+        first_node->parrent->left = NULL;
+    }
+    free(first_node->content);
+    free(first_node);
+    return return_string;
 }
+
+heap_node* find_the_parent(heap* the_heap,int *last_step,int int_cur_node)
+{
+    //we calculate the best path trhough this algorithm
+        int step[MAX_DEPTH];//a stack like array
+        int depth=0;//stack gia tis kinhseis anadromika
+
+        while(int_cur_node>1)
+        {
+            step[depth]=int_cur_node%2;//1 means right , 0 means left
+            int_cur_node=int_cur_node/2;//do the same for the parent
+            depth++;
+        }
+    //we have find the path and now we must go to the node
+        int i;
+        heap_node* cur_node;
+        cur_node=the_heap->root;//begin from the root
+        for(i=depth-1;i>0;i--)
+        {//for all (exept the first one)
+            if(step[i]==0)
+            {
+                cur_node=cur_node->left;
+            }
+            else
+            {
+                cur_node=cur_node->right;
+            }
+        }
+        *last_step=step[i];
+        return cur_node;
+}
+
+// heap_search(heap* the_heap, char* word){
+//
+// }

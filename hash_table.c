@@ -216,10 +216,10 @@ void hash_clean(hash_table ** table)
         //for each bucket in the table
         hash_bucket* cur_bucket = &my_table->buckets[i];
         int j;
-        for ( j = 0; j < cur_bucket->current_children; j++) {
-            free(cur_bucket->children[j].word);
-            free(cur_bucket->children[j].children);
-        }
+        // for ( j = 0; j < cur_bucket->current_children; j++) {
+        //     free(cur_bucket->children[j].word);
+        //     free(cur_bucket->children[j].children);
+        // }
         free(cur_bucket->children);
     }
 

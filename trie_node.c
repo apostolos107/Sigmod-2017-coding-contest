@@ -67,7 +67,6 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
                     temp->children = realloc(temp->children, temp->max_children*sizeof(trie_node));
                 }
                 int i;
-                printf("%s\n",word );
                 /*move the elements so we can make space for the new child*/
                 memmove(&temp->children[spot+1], &temp->children[spot], (temp->current_children-spot)*sizeof(trie_node));
                 /*create the new child*/

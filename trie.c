@@ -27,18 +27,24 @@ OK_SUCCESS insert_ngram(trie * my_trie, char * ngram)
         return 1;
     char * word = strtok(ngram, " ");
     trie_node * node = hash_insert(my_trie->children, word);
-    printf("cur %d word %s  \n",node->current_children,node->word );
     return insert_ngram_to_node( node, NULL );
 }
-//
-// OK_SUCCESS trie_clean(trie** mytree){
-//     trie_node_clean((*mytree)->root);
-//     free((*mytree)->root);
-//     free(*mytree);
-//     *mytree=NULL;
-//     return 1;
-// }
-//
+
+OK_SUCCESS trie_clean(trie** mytree){
+    int i,j;
+    for(i = 0  ; i < (*mytree)->children->size ; i++ )
+    {
+        for(j = 0 ; j < (*mytree)->children->buckets[i].current_children ; j++)
+        {
+            trie_node_clean(&(*mytree)->children->buckets[i].children[j]);
+        }
+    }
+    hash_clean(&(*mytree)->children);
+    free(*mytree);
+    *mytree=NULL;
+    return 1;
+}
+
 OK_SUCCESS delete_ngram(trie * my_trie, char * ngram)
 {
     return trie_delete(my_trie->children, ngram);

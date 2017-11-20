@@ -220,7 +220,7 @@ OK_SUCCESS trie_delete(hash_table* table,char* ngram)
         }
         stack_count--;
     }
-    if(hash_node->current_children==0)
+    if(hash_node->current_children==0 && hash_node->is_final=='N')
     {
         int return_value= hash_delete(table, hash_word);
         free(hash_word);

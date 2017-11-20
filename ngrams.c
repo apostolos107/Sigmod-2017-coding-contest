@@ -92,20 +92,20 @@ int main (int argc, char* argv[])
         }
         //it removes the \n at the end and adds a \0
         buf[chars_read-1]='\0';
-        // if(buf[0]=='Q'){
-        //     the_word=&buf[2];
-        //     // printf("---Question{%s}\n", the_word);
-        //     result_of_search* result = search(my_triee,the_word);
-        //     if(result->num_of_results!=0){
-        //         result->cur_word[strlen(result->cur_word)-1]='\0';
-        //         // printf("====%s\n",result->cur_word);
-        //         printf("%s\n",result->cur_word);
-        //     }else{
-        //         // printf("====-1\n");
-        //         printf("-1\n");
-        //     }
-        //     delete_result(&result);
-        // }else
+        if(buf[0]=='Q'){
+            the_word=&buf[2];
+            // printf("---Question{%s}\n", the_word);
+            result_of_search* result = search(my_triee,the_word);
+            if(result->num_of_results!=0){
+                result->cur_word[strlen(result->cur_word)-1]='\0';
+                // printf("====%s\n",result->cur_word);
+                printf("%s\n",result->cur_word);
+            }else{
+                // printf("====-1\n");
+                printf("-1\n");
+            }
+            delete_result(&result);
+        }else
         if(buf[0]=='A'){
             the_word= &buf[2];
             // printf("---Add{%s}\n", the_word);
@@ -121,7 +121,7 @@ int main (int argc, char* argv[])
             // printf("---A wild F appeared\n");
         }
     }
-    // trie_clean(&my_triee);
+    trie_clean(&my_triee);
     hash_clean(&my_triee->children);
     free(my_triee);
 //free whatever is allocated

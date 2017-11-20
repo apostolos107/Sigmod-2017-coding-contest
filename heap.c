@@ -132,6 +132,28 @@ heap_node* heap_insert(heap* the_heap, char* word){
     return new_node;
 }
 
-heap_search(heap* the_heap, char* word){
+heap_node* heap_search(heap_node* start_node, char* word){
+    heap_node* cur_node = start_node;
+    if(cur_node!=NULL){
+        int cmp_val = strcmp(cur_node->content , word);
+        if( cmp_val==0 ){
+            //if found return this
+            return cur_node;
+        }else if(cmp_val==-1){
+            //if it's smaller than the root
+            //no need to go deeper (pruning)
+            return NULL;
+        }else if(cmp_val==1){
+            //it's children of one of the kids
+            heap_node* left_result,right_result;
+            left_result = heap_search(cur_node->left, word);
+            if(left_result!=NULL){
+                return left_result;
+            }else{
+                return heap_search(cur_node->left, word);
+            }
+        }
 
+    }
+    return NULL;
 }

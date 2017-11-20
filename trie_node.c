@@ -4,6 +4,7 @@
 
 #include "trie.h"
 #include "tools.h"
+#include "trie_node.h"
 // #include "hash_table.h"
 
 trie_node* create_trie_node()

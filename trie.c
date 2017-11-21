@@ -3,6 +3,7 @@
 #include <string.h>
 #include "trie.h"
 #include "tools.h"
+#include "heap.h"
 #include "trie_node.h"
 
 #define INITIAL_RESULT_SIZE 1024 //the size of the string that holds the result
@@ -72,7 +73,7 @@ char* get_word(char* cur_ptr, char* original_ptr, int init_size){
     return &cur_ptr[num_of_white_spaces];
 }
 
-result_of_search* search(trie* my_trie,char* the_ngram)
+result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap)
 {
     #if COPY_ON_SEARCH==0
         char* current_sub_str=the_ngram;//just get the pointer to the initial string
@@ -109,7 +110,7 @@ result_of_search* search(trie* my_trie,char* the_ngram)
                     // printf("\t and it's final|SO I ADD TO RESULT|\n");
 
                     // printf("I add[%s]\n",current_sub_str);
-                    add_to_result(result,current_word,current_sub_str);
+                    add_to_result(result,current_word,current_sub_str, my_heap);
                 }
                 cur_node=&cur_node->children[spot_of_word];//go deeper
             } else {

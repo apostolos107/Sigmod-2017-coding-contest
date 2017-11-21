@@ -57,7 +57,6 @@ trie_node * hash_insert(hash_table * table, char * word)
     {
         position = hash_round(code, table->mod_value *2);
     }
-
     return hash_bucket_insert(table, position, word);
 }
 
@@ -76,15 +75,18 @@ trie_node * hash_bucket_insert(hash_table * table, int pos, char * word)
     else if(current_bucket->current_children == current_bucket->max_children)
     {/*SFAGI*/
         expand_hash_table(table);
-
+        unsigned long code = hash_word(word);
+        pos = hash_round(code, table->mod_value);
+        if (pos < table->current_breaking)
+        {
+            pos = hash_round(code, table->mod_value *2);
+        }
         if(table->buckets[pos].current_children == table->buckets[pos].max_children)
         {
             table->buckets[pos].max_children += BUCKET_START_SIZE;
             table->buckets[pos].children = realloc(table->buckets[pos].children,  table->buckets[pos].max_children*sizeof(trie_node));
         }
         current_bucket = & table->buckets[pos];
-
-
     }
 
     int spot_on_bucket;

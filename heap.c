@@ -12,10 +12,6 @@ typedef struct heap_list_node {
 
 int cmp_heap_node(heap_node* heap_node1, heap_node* heap_node2);
 
-char* heap_get_top(heap* the_heap);//returns the most finded word
-
-heap_node* heap_delete_top(heap* the_heap);//deletes the heap root item
-
 heap_node* find_the_parent(heap* the_heap,int*,int) ;
 
 heap_node* heap_search(heap_node* start_node, char* word);
@@ -54,70 +50,15 @@ heap* heap_create(){
 }
 
 void heapify(heap* the_heap, heap_node* start_node){
-    int temp;
     heap_node *parrent;
-    heap_node *up_l,*up_r,*temp1,*temp2;
-    heap_node *do_l,*do_r;
     if(start_node==NULL || start_node->parrent==NULL){
         return;
     }
     parrent=start_node->parrent;
     if( cmp_heap_node(start_node, parrent)>0 ){
-        char* temp_str;
-        int temp_int;
         heap_swap_nodes(the_heap, start_node, parrent);
 
-        // temp_str=start_node->content;
-        // start_node->content = parrent->content;
-        // parrent->content = temp_str;
-        //
-        // temp_int = start_node->appeared;
-        // start_node->appeared = parrent->appeared;
-        // parrent->appeared = temp_int;
         heapify(the_heap,parrent);//now heapify the parrent
-
-        // do_l=start_node->left;
-        // do_r=start_node->right;
-        // up_l=parrent->left;
-        // up_r=parrent->right;
-        //
-        // //set the kids of the start node if they have to show to the parrent
-        // if( start_node->left !=NULL ){
-        //     start_node->left->parrent=parrent;
-        // }
-        // if( start_node->right !=NULL ){
-        //     start_node->right->parrent=parrent;
-        // }
-        //
-        // //set the parent's parent left or right to show to the correct node
-        // if(parrent->parrent!=NULL){//eftasa sthn riza
-        //     if(parrent->parrent->left==parrent){
-        //         parrent->parrent->left=start_node;
-        //     }else{
-        //         parrent->parrent->right=start_node;
-        //     }
-        // }else{
-        //     the_heap->root=start_node;
-        // }
-        // //fix the pointers in
-        // if(parrent->left==start_node){
-        //     if(parrent->right!=NULL) parrent->right->parrent=start_node;//an uparxei
-        //     parrent->left=do_l;
-        //     parrent->right=do_r;
-        //     start_node->parrent=parrent->parrent;
-        //     start_node->left=parrent;
-        //     start_node->right=up_r;
-        // }else if(parrent->right==start_node){
-        //     if(parrent->left!=NULL) parrent->left->parrent=start_node;//an uparxei
-        //     parrent->right=do_r;
-        //     parrent->left=do_l;
-        //     start_node->parrent=parrent->parrent;
-        //     start_node->left=up_l;
-        //     start_node->right=parrent;
-        // }
-        // parrent->parrent=start_node;
-        //we don't swap the pointers, we spaw the data in the node
-        // heapify(the_heap,start_node);//now heapify the start node that is moved up
     }else{//all iz well
         return;
     }
@@ -173,59 +114,6 @@ void heap_swap_nodes(heap* the_heap, heap_node* heap_1, heap_node* heap_2){
     heap_2->appeared = temp_int;
 }
 
-// char* heap_get_top(heap* the_heap)
-// {
-//     //find the last node
-//     int last_step;
-//     heap_node* first_node=the_heap->root;
-//     heap_node* last_node=find_the_parent(the_heap,&last_step,the_heap->number_of_nodes);
-//     if(last_step  == 1)
-//     {
-//         last_node=last_node->right;
-//     }
-//     else if(last_step == 0)
-//     {
-//         last_node=last_node->left;
-//     }
-//     //swap the first with the last
-//     // first_node->parrent = last_node->parrent;
-//     // last_node->parrent = NULL;
-//     // last_node->left = first_node->left;
-//     // last_node->right = first_node->right;
-//     // first_node->right = NULL ;
-//     // first_node-> left = NULL ;
-//     char* return_string;
-//     int temp_int;//temp variables
-//
-//     return_string = first_node->content;
-//     first_node->content = last_node->content;
-//     first_node->appeared = last_node->appeared;//we don't care how many times appeared
-//
-//     // return_string = malloc((strlen(first_node->content)+1)*sizeof(char));
-//     // strcpy(return_string, first_node->content);
-//
-//     //delete the last node (it was the first)
-//     if(last_step  == 1)
-//     {
-//         last_node->parrent->right = NULL;
-//     }
-//     else if(last_step == 0)
-//     {
-//         last_node->parrent->left = NULL;
-//     }
-//     free(last_node);//just free the last node
-//     the_heap->number_of_nodes--;
-//     //remain heap by findin the new max
-//     heap_node* cur_node = NULL;
-//     cur_node = first_node;
-//     do{
-//         int cmp_left=0;//root with left
-//         int cmp_right=0;//root with right
-//         int cmp_left_with_right=0;//left with right
-//     }while();
-//     return return_string;//the string of the old first node
-// }
-
 heap_node* find_the_parent(heap* the_heap,int *last_step,int int_cur_node)
 {
     //we calculate the best path trhough this algorithm
@@ -266,7 +154,7 @@ heap_node* heap_search(heap_node* start_node, char* word){
             return cur_node;
         }else{
             //it's children of one of the kids
-            heap_node* left_result,right_result;
+            heap_node* left_result;
             left_result = heap_search(cur_node->left, word);
             if(left_result!=NULL){
                 return left_result;

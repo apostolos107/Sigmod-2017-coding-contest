@@ -16,7 +16,7 @@ typedef struct result_of_search{
 
 
 typedef struct stack_node{
-    trie_node* node;
+    struct trie_node* node;
     int position;
 }stack_node;
 

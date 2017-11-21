@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "trie_node.h"
+#include "hash_table.h"
 #include "tools.h"
 
 /*   sdbm hash function from:

@@ -122,7 +122,7 @@ int main (int argc, char* argv[])
         }
     }
     trie_clean(&my_triee);
-    // hash_clean(&my_triee->children);
+//    hash_clean(&my_triee->children);
     free(my_triee);
 //free whatever is allocated
     free(buf);

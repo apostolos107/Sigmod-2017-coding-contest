@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tools.h"
-
+#include "heap.h"
 int count_words(char * s)
 { /*count number of words so we can know the N of our N-Gram*/
   int found_letter = 0;
@@ -141,11 +141,12 @@ int word_exists(result_of_search *result, char* first_word, char* last_word){
     return 0;
 }
 
-void add_to_result(result_of_search* result,char* the_word,char* first_word){
+void add_to_result(result_of_search* result,char* the_word,char* first_word, heap* my_heap){
     result->num_of_results++;
     int bytes_wrote;
     // printf("{%s}->{%s}\t{%s}[%d]\n",first_word,the_word,result->cur_word,result->current_wrote);
     int exists = word_exists(result,first_word,the_word);//checks if the word exists already on the result
+
     if(exists==1){
         // printf("---------------------\n");
         // printf("\nNO ADD {%s}->{%s}\t{%s}[%d]\n",first_word,the_word,result->cur_word,result->current_wrote);
@@ -158,6 +159,8 @@ void add_to_result(result_of_search* result,char* the_word,char* first_word){
         // printf("---------------------\n");
         // printf("\t===no\n" );
     }
+    int old_start = result->current_wrote;
+    int total_write = 0;
     while(first_word<=the_word){//for every word until the last one
         // printf("$$$%s\n",first_word);
         int size_of_word = strlen(first_word);
@@ -174,11 +177,17 @@ void add_to_result(result_of_search* result,char* the_word,char* first_word){
                 error_exit("Realloc faile in tools add_to_result");
             }
         }
+        total_write+=size_of_word+1;
         strcpy(&result->cur_word[result->current_wrote],first_word);//copy the word
         result->current_wrote+=size_of_word+1;
         result->cur_word[result->current_wrote-1]=' ';//instead of '\0' add space
         first_word+=size_of_word+1;//go to the next word
     }
+    int old_val = result->cur_word[total_write-1];
+    result->cur_word[old_start+total_write-1]='\0';
+    // printf("{%s}\n", &result->cur_word[old_start]);
+    heap_insert(my_heap, &result->cur_word[old_start]);
+    result->cur_word[total_write-1]=old_val;
     // printf("!!!%s\n",result->cur_word);
     result->cur_word[result->current_wrote-1]='|';//add the ending chars
     result->cur_word[result->current_wrote]='\0';

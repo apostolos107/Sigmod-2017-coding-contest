@@ -1,5 +1,5 @@
-SOURCE = ngrams.c trie.c hash_table.c trie_node.c tools.c
-OBJS = ngrams.o trie.o hash_table.o trie_node.o tools.o
+SOURCE = ngrams.c trie.c hash_table.c trie_node.c tools.c heap.c
+OBJS = ngrams.o trie.o hash_table.o trie_node.o tools.o heap.o
 EXEC =NGrams.exe
 CC	= gcc
 FLAGS   = -g -c
@@ -29,10 +29,13 @@ trie_node.o: trie_node.c
 tools.o: tools.c
 	$(CC) $(FLAGS) $?
 
+heap.o: heap.c
+	$(CC) $(FLAGS) $?
+
 test: test_entry
 	./test_entry
 
-test_entry: test_entry.o trie.o trie_node.o tools.o
+test_entry: test_entry.o trie.o trie_node.o tools.o heap.o
 	$(CC) -o $@ $?
 
 test_entry.o: test_entry.c

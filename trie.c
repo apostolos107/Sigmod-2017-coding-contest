@@ -4,6 +4,7 @@
 #include "trie.h"
 // #include "hash_table.h"
 #include "tools.h"
+#include "heap.h"
 #include "trie_node.h"
 
 #define INITIAL_RESULT_SIZE 1024 //the size of the string that holds the result
@@ -77,7 +78,7 @@ char* get_word(char* cur_ptr, char* original_ptr, int init_size){
     return &cur_ptr[num_of_white_spaces];
 }
 
-result_of_search* search(trie* my_trie,char* the_ngram)
+result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap)
 {
     #if COPY_ON_SEARCH==0
         char* current_sub_str=the_ngram;//just get the pointer to the initial string
@@ -107,7 +108,7 @@ result_of_search* search(trie* my_trie,char* the_ngram)
         if(current_word!=NULL){
             cur_node = hash_search(root_hash_table, current_word);//search in the hash table
             if(cur_node!=NULL && cur_node->is_final=='Y'){//if found and it's final
-                add_to_result(result,current_word,current_sub_str);//add to the result
+                add_to_result(result,current_word,current_sub_str, my_heap);//add to the result
             }
             current_word=get_word(&current_word[strlen(current_word)+1], copied_string, original_size);//go to the next word
         }
@@ -122,7 +123,7 @@ result_of_search* search(trie* my_trie,char* the_ngram)
                     // printf("\t and it's final|SO I ADD TO RESULT|\n");
 
                     // printf("I add[%s]\n",current_sub_str);
-                    add_to_result(result,current_word,current_sub_str);
+                    add_to_result(result,current_word,current_sub_str, my_heap);
                 }
                 cur_node=&cur_node->children[spot_of_word];//go deeper
             } else {

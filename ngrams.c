@@ -4,6 +4,7 @@
 
 #include "tools.h"
 #include "trie.h"
+#include "heap.h"
 
 #define CHAR_BUFFER_SIZE 128
 int main (int argc, char* argv[])
@@ -74,6 +75,7 @@ int main (int argc, char* argv[])
     int count=0;
     int chars_read=0;
     char* the_word=NULL;
+    heap* my_heap = heap_create();
     while(1){
         chars_read=getline(&buf, &size, read_from);
         if(chars_read==-1){
@@ -95,7 +97,7 @@ int main (int argc, char* argv[])
         if(buf[0]=='Q'){
             the_word=&buf[2];
             // printf("---Question{%s}\n", the_word);
-            result_of_search* result = search(my_triee,the_word);
+            result_of_search* result = search(my_triee,the_word, my_heap);
             if(result->num_of_results!=0){
                 result->cur_word[strlen(result->cur_word)-1]='\0';
                 // printf("====%s\n",result->cur_word);
@@ -116,8 +118,16 @@ int main (int argc, char* argv[])
             // printf("---Delete{%s}\n", the_word);
             delete_ngram(my_triee, the_word);
 
-        }
-        else if(buf[0]=='F'){
+        }else if(buf[0]=='F'){
+            int k=0;
+            sscanf(buf, "F %d",&k);
+            if(k!=0){
+                printf("Top: ");
+                heap_print_top_k(my_heap, k);//print
+                printf("\n");
+            }
+            heap_destroy(&my_heap);
+            my_heap = heap_create();
             // printf("---A wild F appeared\n");
         }
     }
@@ -125,6 +135,7 @@ int main (int argc, char* argv[])
 //    hash_clean(&my_triee->children);
     free(my_triee);
 //free whatever is allocated
+    heap_destroy(&my_heap);
     free(buf);
     return 0;
 }

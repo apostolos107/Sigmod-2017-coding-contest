@@ -4,6 +4,7 @@
 #include <assert.h>
 
 #include "trie.h"
+#include "heap.h"
 
 
 void test_insert_trie(char * sentence)
@@ -118,10 +119,61 @@ void test_insert_cases()
     test_insert_trie(sentence3);
 }
 
+void test_heap_inserts(){
+    heap* my_heap = NULL;
+    my_heap = heap_create();
+    char a_word[1024];
+    for (size_t i = 0; i < 1000; i++) {
+        a_word[i]='a'+i%24;
+        a_word[i+1]='\0';
+        heap_insert(my_heap, a_word);
+    }
+    heap_insert(my_heap, "good thing");
+    heap_insert(my_heap, "good thing");
+    heap_insert(my_heap, "good thing");
+    heap_insert(my_heap, "good");
+    heap_insert(my_heap, "good");
+    heap_insert(my_heap, "good");
+    heap_insert(my_heap, "good");
+    heap_insert(my_heap, "dog");
+    heap_insert(my_heap, "dog");
+    heap_insert(my_heap, "cat");
+    heap_insert(my_heap, "cat");
+    heap_insert(my_heap, "wow");
+    heap_insert(my_heap, "wow");
+    heap_insert(my_heap, "wow");
+    heap_insert(my_heap, "wow");
+    heap_insert(my_heap, "wow");
+
+    // heap_node heap_1,heap_2;
+    // heap_1.content=copy_string("a");
+    // heap_1.appeared=0;
+    //
+    // heap_2.content=copy_string("b");
+    // heap_2.appeared=0;
+
+    // printf("%d\n",cmp_heap_node(&heap_1, &heap_2));
+    heap_print_top_k(my_heap, 6);
+    // printf("%s(%d)\n", my_heap->root->content, my_heap->root->appeared);
+    // printf("%s(%d)\t", my_heap->root->left->content, my_heap->root->left->appeared);
+    // printf("%s(%d)\n", my_heap->root->right->content, my_heap->root->right->appeared);
+    heap_destroy(&my_heap);
+
+}
+
+void test_heap_cmp(){
+    heap_node* heap_1,heap_2;
+
+}
+void test_heap(){
+    test_heap_cmp();
+    test_heap_inserts();
+}
  int main(void)
  {
     test_insert_cases();
     test_insert_search_delete();
+    test_heap();
     printf("Passed the test!\n");
     return 0;
 }

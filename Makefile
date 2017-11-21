@@ -32,7 +32,7 @@ heap.o: heap.c
 test: test_entry
 	./test_entry
 
-test_entry: test_entry.o trie.o trie_node.o tools.o
+test_entry: test_entry.o trie.o trie_node.o tools.o heap.o
 	$(CC) -o $@ $?
 
 test_entry.o: test_entry.c

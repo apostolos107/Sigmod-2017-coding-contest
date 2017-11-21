@@ -145,7 +145,15 @@ void test_heap_inserts(){
     heap_insert(my_heap, "wow");
     heap_insert(my_heap, "wow");
 
-    // heap_print_top_k(my_heap, 10);
+    // heap_node heap_1,heap_2;
+    // heap_1.content=copy_string("a");
+    // heap_1.appeared=0;
+    //
+    // heap_2.content=copy_string("b");
+    // heap_2.appeared=0;
+
+    // printf("%d\n",cmp_heap_node(&heap_1, &heap_2));
+    heap_print_top_k(my_heap, 6);
     // printf("%s(%d)\n", my_heap->root->content, my_heap->root->appeared);
     // printf("%s(%d)\t", my_heap->root->left->content, my_heap->root->left->appeared);
     // printf("%s(%d)\n", my_heap->root->right->content, my_heap->root->right->appeared);

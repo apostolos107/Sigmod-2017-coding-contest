@@ -19,4 +19,6 @@ heap_node* heap_insert(heap* the_heap,char* word);//inserts a word or if exists 
 void heap_destroy(heap** the_heap);//destroys the heap
 void heap_print_top_k(heap* the_heap, int k);//prints the top k
 
+int cmp_heap_node(heap_node* heap_node1, heap_node* heap_node2);
+
 #endif

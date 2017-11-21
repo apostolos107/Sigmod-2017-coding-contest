@@ -27,7 +27,7 @@ int cmp_heap_node(heap_node* heap_node1, heap_node* heap_node2){
     }else if(heap_node1->appeared > heap_node2->appeared){
         return 1;
     }else{
-        return strcmp(heap_node1->content, heap_node2->content);
+        return strcmp(heap_node2->content, heap_node1->content);
     }
 }
 
@@ -216,10 +216,19 @@ void heap_list_delete_list(heap_list_node** the_list){//eleutheronei ton xwro po
 
 void heap_print_top_k(heap* the_heap, int k){
     int printed_nodes = 0;
+    if(k==0) return;
     heap_list_node *the_heap_list = NULL,*temp_list;
-    heap_list_add_node(&the_heap_list, the_heap->root);//add the root to the list(initialize it)
+    //no need to add the first one
+    // heap_list_add_node(&the_heap_list, the_heap->root);//add the root to the list(initialize it)
 
     heap_node *left,*right;
+//print the first one
+    if(the_heap->root==NULL){
+        return ;
+    }
+    printf("%s",the_heap->root->content);
+    heap_list_add_node(&the_heap_list,the_heap->root->left);
+    heap_list_add_node(&the_heap_list,the_heap->root->right);
 
     while (printed_nodes<k && printed_nodes<the_heap->number_of_nodes) {
         heap_node* cur_node;
@@ -233,7 +242,7 @@ void heap_print_top_k(heap* the_heap, int k){
         //update printed nodes
         printed_nodes++;
         //print the node
-        printf("|%s(%d)\n\n", cur_node->content,cur_node->appeared);
+        printf("|%s", cur_node->content);
         //bgale apo thn lista thn kefalh
         temp_list=the_heap_list;
         the_heap_list=the_heap_list->next;//move list to the next element

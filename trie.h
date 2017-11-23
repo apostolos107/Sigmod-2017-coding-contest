@@ -4,6 +4,8 @@
 #include "trie_node.h"
 #include "tools.h"
 #include "heap.h"
+#include "bloom_filter.h"
+
 typedef struct trie{
     hash_table * children;
 }trie;

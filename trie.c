@@ -167,6 +167,6 @@ result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap)
     #if COPY_ON_SEARCH!=0
         free(copied_string);//nessasery only if the string is beeing copied
     #endif
-
+    clean_vector(bloom);
     return result;
 }

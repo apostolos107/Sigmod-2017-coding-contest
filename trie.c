@@ -7,7 +7,7 @@
 #include "heap.h"
 #include "trie_node.h"
 
-#define INITIAL_RESULT_SIZE 1024 //the size of the string that holds the result
+#define INITIAL_RESULT_SIZE 2048 //the size of the string that holds the result
 #define COPY_ON_SEARCH 0 //if we will copy the string on search
 
 trie * init_trie()

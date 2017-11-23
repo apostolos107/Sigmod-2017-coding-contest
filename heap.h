@@ -14,6 +14,7 @@ typedef struct heap{
     int number_of_nodes;
 } heap;
 
+void init_heap_node(heap_node*);//init's the heap node (already allocated)
 heap* heap_create();//create and initialize the heap
 heap_node* heap_insert(heap* the_heap,char* word);//inserts a word or if exists increase the counter
 void heap_destroy(heap** the_heap);//destroys the heap

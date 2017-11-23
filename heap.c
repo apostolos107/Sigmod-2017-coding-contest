@@ -12,11 +12,13 @@ typedef struct heap_list_node {
 
 int cmp_heap_node(heap_node* heap_node1, heap_node* heap_node2);
 
-heap_node* find_the_parent(heap* the_heap,int*,int) ;
+heap_node* find_the_parent(heap* the_heap,int*,int);
 
 heap_node* heap_search(heap_node* start_node, char* word);
 
 void heap_swap_nodes(heap* the_heap, heap_node* heap_1, heap_node* heap_2);
+
+void move_up(heap* the_heap, heap_node* start_node);//swaps a node with it's parrent
 
 int cmp_heap_node(heap_node* heap_node1, heap_node* heap_node2){
     if(heap_node1==NULL || heap_node1==NULL){
@@ -31,13 +33,17 @@ int cmp_heap_node(heap_node* heap_node1, heap_node* heap_node2){
     }
 }
 
-heap_node* create_node(){
-    heap_node* new_node = malloc(sizeof(heap_node));
+void init_heap_node(heap_node* new_node){
     new_node->left=NULL;
     new_node->right=NULL;
     new_node->parrent=NULL;
     new_node->content=NULL;
     new_node->appeared=1;
+}
+
+heap_node* create_node(){
+    heap_node* new_node = malloc(sizeof(heap_node));
+    init_heap_node(new_node);
     return new_node;
 }
 
@@ -56,9 +62,10 @@ void heapify(heap* the_heap, heap_node* start_node){
     }
     parrent=start_node->parrent;
     if( cmp_heap_node(start_node, parrent)>0 ){
-        heap_swap_nodes(the_heap, start_node, parrent);
+        move_up(the_heap, start_node);
+        // heap_swap_nodes(the_heap, start_node, parrent);
 
-        heapify(the_heap,parrent);//now heapify the parrent
+        heapify(the_heap,start_node);//now heapify the parrent
     }else{//all iz well
         return;
     }
@@ -66,7 +73,7 @@ void heapify(heap* the_heap, heap_node* start_node){
 
 heap_node* heap_insert(heap* the_heap, char* word){
     int last_step;
-    heap_node* cur_node;
+    heap_node* cur_node=NULL;
     if (the_heap->number_of_nodes==0){
         //if it's the first node in the heap
         cur_node=the_heap->root=create_node();//all the pointers are NULL
@@ -98,6 +105,56 @@ heap_node* heap_insert(heap* the_heap, char* word){
         heapify(the_heap,new_node);
         return new_node;
     }
+}
+
+void move_up(heap* the_heap, heap_node* start_node){
+    int temp;
+    heap_node *parrent;
+    heap_node *up_l,*up_r,*temp1,*temp2;
+    heap_node *do_l,*do_r;
+    parrent=start_node->parrent;
+    do_l=start_node->left;
+    do_r=start_node->right;
+    up_l=parrent->left;
+    up_r=parrent->right;
+
+//ta paidia tou start node
+    if( start_node->left !=NULL ){
+        start_node->left->parrent=parrent;
+    }
+    if( start_node->right !=NULL ){
+        start_node->right->parrent=parrent;
+    }
+
+//to gonio tou goniou
+    if(parrent->parrent!=NULL){//eftasa sthn riza
+        if(parrent->parrent->left==parrent){
+            parrent->parrent->left=start_node;
+        }else{
+            parrent->parrent->right=start_node;
+        }
+    }else{
+        the_heap->root=start_node;
+    }
+
+//ston gonio ta
+    if(parrent->left==start_node){
+        if(parrent->right!=NULL) parrent->right->parrent=start_node;//an uparxei
+        parrent->left=do_l;
+        parrent->right=do_r;
+        start_node->parrent=parrent->parrent;
+        start_node->left=parrent;
+        start_node->right=up_r;
+    }else if(parrent->right==start_node){
+        if(parrent->left!=NULL) parrent->left->parrent=start_node;//an uparxei
+        parrent->right=do_r;
+        parrent->left=do_l;
+        start_node->parrent=parrent->parrent;
+        start_node->left=up_l;
+        start_node->right=parrent;
+    }
+    parrent->parrent=start_node;
+
 }
 
 void heap_swap_nodes(heap* the_heap, heap_node* heap_1, heap_node* heap_2){

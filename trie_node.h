@@ -5,8 +5,6 @@
 
 
 #define NUMBER_OF_CHILDREN 5
-#define HASH_START_SIZE 5
-#define BUCKET_START_SIZE 5
 
 
 typedef int OK_SUCCESS;

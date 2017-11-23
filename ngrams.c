@@ -6,7 +6,7 @@
 #include "trie.h"
 #include "heap.h"
 
-#define CHAR_BUFFER_SIZE 128
+#define CHAR_BUFFER_SIZE 1024
 int main (int argc, char* argv[])
 {
     char * buf;//the buffer that we will use for reading lanes

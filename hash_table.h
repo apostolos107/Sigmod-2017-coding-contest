@@ -4,6 +4,9 @@
 #include "trie_node.h"
 #include "tools.h"
 
+#define HASH_START_SIZE 100
+#define BUCKET_START_SIZE 20
+
 typedef struct hash_bucket{
     struct trie_node * children;
     int current_children;

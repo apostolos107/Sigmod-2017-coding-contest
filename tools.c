@@ -3,6 +3,8 @@
 #include <string.h>
 #include "tools.h"
 #include "heap.h"
+#include "bloom_filter.h"
+
 int count_words(char * s)
 { /*count number of words so we can know the N of our N-Gram*/
   int found_letter = 0;
@@ -142,23 +144,10 @@ int word_exists(result_of_search *result, char* first_word, char* last_word){
 }
 
 void add_to_result(result_of_search* result,char* the_word,char* first_word, heap* my_heap){
+    char *init_the_word=the_word, *init_first_word=first_word;
     result->num_of_results++;
     int bytes_wrote;
     // printf("{%s}->{%s}\t{%s}[%d]\n",first_word,the_word,result->cur_word,result->current_wrote);
-    int exists = word_exists(result,first_word,the_word);//checks if the word exists already on the result
-
-    if(exists==1){
-        // printf("---------------------\n");
-        // printf("\nNO ADD {%s}->{%s}\t{%s}[%d]\n",first_word,the_word,result->cur_word,result->current_wrote);
-        // printf("---------------------\n");
-        // printf("\t===yes\n" );
-        return;
-    }else{
-        // printf("---------------------\n");
-        // printf("\nADDING {%s}->{%s}\t{%s}[%d]\n",first_word,the_word,result->cur_word,result->current_wrote);
-        // printf("---------------------\n");
-        // printf("\t===no\n" );
-    }
     int old_start = result->current_wrote;
     int total_write = 0;
     while(first_word<=the_word){//for every word until the last one
@@ -186,6 +175,18 @@ void add_to_result(result_of_search* result,char* the_word,char* first_word, hea
     int old_val = result->cur_word[total_write-1];
     result->cur_word[old_start+total_write-1]='\0';
     // printf("{%s}\n", &result->cur_word[old_start]);
+    int exists=bloom_insert_and_check(&result->cur_word[old_start],bloom);
+    // int exists = word_exists(result,init_first_word,init_the_word);//checks if the word exists already on the result
+    if(exists==1){
+        result->cur_word[old_start]='\0';
+        result->current_wrote=old_start;
+        return;
+    }else{
+        // printf("---------------------\n");
+        // printf("\nADDING {%s}->{%s}\t{%s}[%d]\n",first_word,the_word,result->cur_word,result->current_wrote);
+        // printf("---------------------\n");
+        // printf("\t===no\n" );
+    }
     heap_insert(my_heap, &result->cur_word[old_start]);
     result->cur_word[total_write-1]=old_val;
     // printf("!!!%s\n",result->cur_word);

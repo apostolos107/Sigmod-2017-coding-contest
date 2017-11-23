@@ -3,6 +3,7 @@
 
 #include "trie_node.h"
 #include "heap.h"
+
 int count_words(char * s);
 char * copy_string(char * s);
 void error_exit(char * s);

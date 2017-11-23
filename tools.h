@@ -21,6 +21,6 @@ typedef struct stack_node{
 }stack_node;
 
 result_of_search* new_result(int size);
-void delete_result(result_of_search** result);
-void add_to_result(result_of_search* result,char* the_word,char* first_word, heap* my_heap);
+void delete_result(struct result_of_search** result);
+void add_to_result(struct result_of_search* result, char* the_word, char* first_word, struct heap* my_heap);
 #endif

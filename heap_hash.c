@@ -65,11 +65,11 @@ heap_node * heap_hash_bucket_insert(heap_hash_table * table, int pos, char * wor
     if(current_bucket->children == NULL)
     {
         current_bucket->current_children++;
-        current_bucket->children = malloc(BUCKET_START_SIZE*sizeof(heap_hash_table));
-        init_heap_node(&current_bucket->children[0]);
-        table->buckets[pos].children[0].content = copy_string(word);
+        current_bucket->children = malloc(BUCKET_START_SIZE*sizeof(heap_hash_table*));
+        current_bucket->children[0] = create_node();
+        table->buckets[pos].children[0]->content = copy_string(word);
 
-        return &current_bucket->children[0];
+        return current_bucket->children[0];
     }
     else if(current_bucket->current_children == current_bucket->max_children)
     {/*SFAGI*/
@@ -92,12 +92,12 @@ heap_node * heap_hash_bucket_insert(heap_hash_table * table, int pos, char * wor
     int found = heap_binary_search_array(current_bucket->children, current_bucket->current_children, word, &spot_on_bucket);
     if(found == -1)
     {
-        memmove(&current_bucket->children[spot_on_bucket+1], &current_bucket->children[spot_on_bucket], (current_bucket->current_children-spot_on_bucket)*sizeof(trie_node));
-        init_heap_node(&current_bucket->children[spot_on_bucket]);
-        current_bucket->children[spot_on_bucket].content = copy_string(word);
+        memmove(&current_bucket->children[spot_on_bucket+1], &current_bucket->children[spot_on_bucket], (current_bucket->current_children-spot_on_bucket)*sizeof(heap_node*));
+        current_bucket->children[spot_on_bucket] =create_node();
+        current_bucket->children[spot_on_bucket]->content = copy_string(word);
         current_bucket->current_children ++;
     }
-    return &current_bucket->children[spot_on_bucket];
+    return current_bucket->children[spot_on_bucket];
 }
 
 int heap_expand_hash_table(heap_hash_table * table)
@@ -111,13 +111,13 @@ int heap_expand_hash_table(heap_hash_table * table)
     int move_left = 0;
     for (int i = 0; i < breaking_bucket->current_children; i++)
     {
-        int new_pos = heap_hash_round(heap_hash_word(breaking_bucket->children[i].content), table->mod_value*2);
+        int new_pos = heap_hash_round(heap_hash_word(breaking_bucket->children[i]->content), table->mod_value*2);
         if(new_pos == table->current_breaking)
         {
             if(move_left!=0){
                 //must move it
                 //also at the end
-                memmove(&breaking_bucket->children[i-move_left], &breaking_bucket->children[i], (breaking_bucket->current_children-i)*sizeof(trie_node));
+                memmove(&breaking_bucket->children[i-move_left], &breaking_bucket->children[i], (breaking_bucket->current_children-i)*sizeof(heap_node*));
                 i-=move_left;
                 breaking_bucket->current_children-=move_left;
                 move_left=0;
@@ -173,7 +173,7 @@ heap_node * heap_hash_search(heap_hash_table * table, char * word)
     found = heap_binary_search_array(cur_bucket->children, cur_bucket->current_children, word, &pos);
     if(found==1){
         //if found return the trie_node
-        return &cur_bucket->children[pos];
+        return cur_bucket->children[pos];
     }else{
         return NULL;
     }
@@ -199,10 +199,10 @@ int heap_hash_bucket_delete(heap_hash_bucket * bucket, char * word)
     found = heap_binary_search_array(bucket->children, bucket->current_children, word, &spot);
     if(found==1)
     {
-        free(bucket->children[spot].content);
+        free(bucket->children[spot]->content);
         // free(bucket->children[spot].children);
         if( (bucket->current_children-1)!=spot && (bucket->current_children-1)>0 ){
-            memmove(&bucket->children[spot],&bucket->children[spot+1],(bucket->current_children-spot-1)*sizeof(trie_node));
+            memmove(&bucket->children[spot],&bucket->children[spot+1],(bucket->current_children-spot-1)*sizeof(heap_node*));
         }
         bucket->current_children--;
         return 1;
@@ -218,17 +218,17 @@ void heap_hash_clean(heap_hash_table ** table)
         //for each bucket in the table
         heap_hash_bucket* cur_bucket = &my_table->buckets[i];
         int j;
-        // for ( j = 0; j < cur_bucket->current_children; j++) {
-        //     free(cur_bucket->children[j].word);
-        //     free(cur_bucket->children[j].children);
-        // }
+        for ( j = 0; j < cur_bucket->current_children; j++) {
+            free(cur_bucket->children[j]->content);
+            free(cur_bucket->children[j]);
+        }
         free(cur_bucket->children);
     }
 
     free(my_table->buckets);
     free(*table);
 }
-int heap_binary_search_array(heap_node* array, int size, char* word, int* spot_ptr_arg){
+int heap_binary_search_array(heap_node** array, int size, char* word, int* spot_ptr_arg){
     int spot = 0;//the current spot
     int a = 0;//the base index in array
     int b = size;//the max index in array
@@ -244,18 +244,18 @@ int heap_binary_search_array(heap_node* array, int size, char* word, int* spot_p
     while((a <= b) && (a< size))
     {
         m = (a + b) /2;
-        if ( strcmp(word, array[m].content) == 0)
+        if ( strcmp(word, array[m]->content) == 0)
         { /*this sentence exist as far as here*/
             spot = m;
             found_word =1;
             break;
         }
-        else if( strcmp(word, array[m].content) < 0)
+        else if( strcmp(word, array[m]->content) < 0)
         {/*word belongs before this child*/
             b = m-1;
             spot = m;
         }
-        else if( strcmp(word, array[m].content) > 0)
+        else if( strcmp(word, array[m]->content) > 0)
         {/*word belongs after this child*/
             a = m+1;
             spot = a;

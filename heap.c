@@ -52,6 +52,7 @@ heap* heap_create(){
     new_heap = malloc(sizeof(heap));
     new_heap->root=NULL;//there is no root
     new_heap->number_of_nodes=0;//we have no childrens
+    new_heap->heap_hash = heap_create_hash_table();
     return new_heap;
 }
 
@@ -76,14 +77,16 @@ heap_node* heap_insert(heap* the_heap, char* word){
     heap_node* cur_node=NULL;
     if (the_heap->number_of_nodes==0){
         //if it's the first node in the heap
-        cur_node=the_heap->root=create_node();//all the pointers are NULL
-        cur_node->appeared=1;
-        cur_node->content=copy_string(word);
+        cur_node = the_heap->root =heap_hash_insert(the_heap->heap_hash, word);//add to heap and get the node
+        // cur_node=the_heap->root=create_node();//all the pointers are NULL
+        // cur_node->appeared=1;
+        // cur_node->content=copy_string(word);
         the_heap->number_of_nodes++;
         return cur_node;
     }
     //find the node that we will insert the new entry
-    cur_node = heap_search(the_heap->root, word);//search if the words already exists
+    // cur_node = heap_search(the_heap->root, word);//search if the words already exists
+    cur_node = heap_hash_search(the_heap->heap_hash, word);
     if(cur_node!=NULL){
         //if the words exists increase and heapify
         cur_node->appeared++;
@@ -92,10 +95,11 @@ heap_node* heap_insert(heap* the_heap, char* word){
     }else{
         //find where should be insert
         cur_node=find_the_parent(the_heap,&last_step,the_heap->number_of_nodes+1);
-        heap_node *new_node=create_node();//create the new node
+        // heap_node *new_node=create_node();//create the new node
+        heap_node *new_node=heap_hash_insert(the_heap->heap_hash, word);//create the new node
         new_node->parrent=cur_node;
-        new_node->content=copy_string(word);
-        new_node->appeared=1;
+        // new_node->content=copy_string(word);
+        // new_node->appeared=1;
         if(last_step==0){
             cur_node->left=new_node;
         }else if(last_step==1){
@@ -322,6 +326,7 @@ void heap_destroy(heap** the_heap){
         free(cur_node);
     }
 
-    delete_sub_heap( (*the_heap)->root );
+    // delete_sub_heap( (*the_heap)->root );
+    heap_hash_clean( &((*the_heap)->heap_hash) );
     free(*the_heap);
 }

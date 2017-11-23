@@ -1,5 +1,5 @@
-SOURCE = ngrams.c trie.c hash_table.c trie_node.c tools.c heap.c murmur3.c bloom_filter.c
-OBJS = ngrams.o trie.o hash_table.o trie_node.o tools.o heap.o murmur3.o bloom_filter.o
+SOURCE = ngrams.c trie.c hash_table.c trie_node.c tools.c heap.c murmur3.c bloom_filter.c heap_hash.c
+OBJS = ngrams.o trie.o hash_table.o trie_node.o tools.o heap.o murmur3.o bloom_filter.o heap_hash.o
 EXEC =NGrams.exe
 CC	= gcc
 FLAGS   = -g -c
@@ -30,6 +30,9 @@ trie.o: trie.c
 	$(CC) $(FLAGS) $?
 
 trie_node.o: trie_node.c
+	$(CC) $(FLAGS) $?
+
+heap_hash.o: heap_hash.c
 	$(CC) $(FLAGS) $?
 
 tools.o: tools.c

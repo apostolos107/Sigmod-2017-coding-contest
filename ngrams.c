@@ -6,14 +6,10 @@
 #include "trie.h"
 #include "heap.h"
 
-<<<<<<< HEAD
 #define CHAR_BUFFER_SIZE 1024
-=======
-#define CHAR_BUFFER_SIZE 128
 
 bloom_filter * bloom ;
 
->>>>>>> bloom_filter
 int main (int argc, char* argv[])
 {
     char * buf;//the buffer that we will use for reading lanes

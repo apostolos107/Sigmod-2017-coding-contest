@@ -4,7 +4,7 @@
 #include "murmur3.h"
 #include <string.h>
 
-#define SIZE 100000
+#define SIZE 200000
 #define HASH 3
 
 extern struct bloom_filter* bloom;

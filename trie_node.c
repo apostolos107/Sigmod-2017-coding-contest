@@ -302,17 +302,35 @@ OK_SUCCESS trie_node_clean(trie_node* node)
 int compress(trie_node *node)
 {
     trie_node* count_nodes;
+    trie_node* change_nodes;
+    trie_node* delete_nodes;
     count_nodes=node;
-    int i,loops=0;
+    int i,final_word_size=1,loops=0;
     while(count_nodes->current_children==1)
     {
+        final_word_size+=strlen(count_nodes->word);
         loops++;
+        count_nodes=&count_nodes->children[0];
     }
     if(loops==0)
     {
         return 0;
     }
+    final_word_size+=strlen(node->word);
+    node->compressed=malloc(sizeof(ultra_node));
+    node->compressed->counter=loops+1;
+    node->compressed->positions=malloc(sizeof(short)*(loops+1));
+    node->word=realloc(node->word, final_word_size);
+    node->compressed->positions[0]=strlen(node->word)*node->is_final;
+    change_nodes=node->children;
     for(i = 0 ; i <loops ; i++){
-         int a;
+        strcat(node->word, change_nodes->word);
+        node->compressed->positions[i+1]=strlen(change_nodes[0].word)*change_nodes[0].is_final;
+        free(change_nodes[0].word);
+        delete_nodes=&change_nodes[0];
+        change_nodes=change_nodes[0].children;
+        free(delete_nodes);
     }
+    node->children=change_nodes;
+    return 1;
 }

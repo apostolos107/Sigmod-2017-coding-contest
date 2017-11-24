@@ -6,6 +6,8 @@
 #include "heap.h"
 #include "bloom_filter.h"
 
+#define STACK_SIZE 10
+
 typedef struct trie{
     hash_table * children;
     signed char is_static;
@@ -14,7 +16,7 @@ typedef struct trie{
 
 trie * init_trie();
 OK_SUCCESS insert_ngram(trie * my_trie, char * ngram);
-
+void DFS(trie_node * root);
 OK_SUCCESS trie_clean(trie** my_trie);
 OK_SUCCESS delete_ngram(trie * my_trie, char * ngram) ;
 result_of_search* search(trie* my_trie,char* the_ngram,struct heap* heap);

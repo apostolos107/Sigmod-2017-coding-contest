@@ -287,7 +287,7 @@ void heap_print_top_k(heap* the_heap, int k){
     if(the_heap->root==NULL){
         return ;
     }
-    printf("%s",the_heap->root->content);
+    printf("Top: %s",the_heap->root->content);
     heap_list_add_node(&the_heap_list,the_heap->root->left);
     heap_list_add_node(&the_heap_list,the_heap->root->right);
     printed_nodes++;
@@ -310,6 +310,8 @@ void heap_print_top_k(heap* the_heap, int k){
         the_heap_list=the_heap_list->next;//move list to the next element
         free(temp_list);//free the first elemnt
     }
+    printf("\n");
+
     if(the_heap_list!=NULL){
         heap_list_delete_list(&the_heap_list);
     }

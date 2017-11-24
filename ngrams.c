@@ -126,9 +126,8 @@ int main (int argc, char* argv[])
             int k=0;
             sscanf(buf, "F %d",&k);
             if(k!=0){
-                printf("Top: ");
+                // printf("Top: ");
                 heap_print_top_k(my_heap, k);//print
-                printf("\n");
             }
             heap_destroy(&my_heap);
             my_heap = heap_create();

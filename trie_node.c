@@ -306,6 +306,7 @@ int compress(trie_node *node)
     trie_node* delete_nodes;
     count_nodes=node;
     int i,final_word_size=1,loops=0;
+    //check how many compression must be done and the size of the final word
     while(count_nodes->current_children==1)
     {
         final_word_size+=strlen(count_nodes->word);
@@ -314,23 +315,27 @@ int compress(trie_node *node)
     }
     if(loops==0)
     {
-        return 0;
+        return 0;//nothing to change
     }
-    final_word_size+=strlen(node->word);
+    final_word_size+=strlen(node->word);//add my word size
+    //create the ultra_node
     node->compressed=malloc(sizeof(ultra_node));
     node->compressed->counter=loops+1;
     node->compressed->positions=malloc(sizeof(short)*(loops+1));
+    //realloc the compressed word
     node->word=realloc(node->word, final_word_size);
+    //my word in the first position
     node->compressed->positions[0]=strlen(node->word)*node->is_final;
+    //take the first children
     change_nodes=node->children;
     for(i = 0 ; i <loops ; i++){
-        strcat(node->word, change_nodes->word);
-        node->compressed->positions[i+1]=strlen(change_nodes[0].word)*change_nodes[0].is_final;
-        free(change_nodes[0].word);
-        delete_nodes=&change_nodes[0];
-        change_nodes=change_nodes[0].children;
-        free(delete_nodes);
+        strcat(node->word, change_nodes->word);//add the next word
+        node->compressed->positions[i+1]=strlen(change_nodes[0].word)*change_nodes[0].is_final;//write the lenght to the table position
+        free(change_nodes[0].word);//free the word
+        delete_nodes=&change_nodes[0];//take the node must be deleted
+        change_nodes=change_nodes[0].children;//first take his children
+        free(delete_nodes);//then free it
     }
-    node->children=change_nodes;
+    node->children=change_nodes;//change the node children to the final compressed node's childern
     return 1;
 }

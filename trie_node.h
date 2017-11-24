@@ -5,13 +5,15 @@
 
 
 #define NUMBER_OF_CHILDREN 5
+#define YES 1
+#define NO -1
 
 
 typedef int OK_SUCCESS;
 
 typedef struct trie_node{
     char* word;
-    char is_final;
+    signed char is_final;
     int current_children;
     int max_children;
     struct trie_node* children;
@@ -29,6 +31,7 @@ OK_SUCCESS delete_node_child(trie_node* node,int position);
 int binary_search_array(trie_node* array, int size, char* word, int* spot_ptr_arg);
 int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg);
 OK_SUCCESS trie_node_clean(trie_node* node);
+int compress(trie_node* node);
 
 
 #endif

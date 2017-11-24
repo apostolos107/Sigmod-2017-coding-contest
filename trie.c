@@ -107,7 +107,7 @@ result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap)
         hash_table* root_hash_table = my_trie->children;
         if(current_word!=NULL){
             cur_node = hash_search(root_hash_table, current_word);//search in the hash table
-            if(cur_node!=NULL && cur_node->is_final=='Y'){//if found and it's final
+            if(cur_node!=NULL && cur_node->is_final==YES){//if found and it's final
                 add_to_result(result,current_word,current_sub_str, my_heap);//add to the result
             }
             current_word=get_word(&current_word[strlen(current_word)+1], copied_string, original_size);//go to the next word
@@ -119,7 +119,7 @@ result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap)
             return_value=binary_search_kid(cur_node, current_word, &spot_of_word);
             if (return_value==1) {
                 // printf("\tFOUND at %d ",spot_of_word);fflush(stdout);
-                if(cur_node->children[spot_of_word].is_final=='Y'){
+                if(cur_node->children[spot_of_word].is_final==YES){
                     // printf("\t and it's final|SO I ADD TO RESULT|\n");
 
                     // printf("I add[%s]\n",current_sub_str);

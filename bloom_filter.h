@@ -13,7 +13,7 @@ extern struct bloom_filter* bloom;
 typedef struct bloom_filter{
     int size;
     int hash_amount;
-    int* vector;
+    char* vector;
 }bloom_filter;
 
 bloom_filter* bloom_filter_init();

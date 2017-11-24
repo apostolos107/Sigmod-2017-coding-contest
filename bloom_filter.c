@@ -19,7 +19,7 @@ unsigned long my_word(char * str)
 bloom_filter* bloom_filter_init()
 {
     bloom_filter* new_bloom=malloc(sizeof(bloom_filter));
-    new_bloom->vector=calloc(SIZE,sizeof(int));
+    new_bloom->vector=calloc(SIZE,sizeof(char));
     new_bloom->hash_amount=HASH;
     new_bloom->size=SIZE;
     return  new_bloom ;
@@ -90,7 +90,7 @@ int* hash_results(char* value, bloom_filter* bloom) {
 }
 
 void clean_vector(bloom_filter* bloom){
-    memset(bloom->vector, 0, bloom->size*sizeof(int));
+    memset(bloom->vector, 0, bloom->size*sizeof(char));
     // int i;
     // for(i =0 ; i<bloom->size ; i++)bloom->vector[i]=0;
 }

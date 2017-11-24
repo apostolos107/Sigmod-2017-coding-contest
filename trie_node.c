@@ -14,7 +14,7 @@ trie_node* create_trie_node()
     if(node == NULL)
         error_exit("Malloc Failure");
 
-    node->is_final = 'N';
+    node->is_final = NO;
     node->current_children = 0;
     node->max_children = NUMBER_OF_CHILDREN;
     node->word=NULL;
@@ -27,7 +27,7 @@ void init_trie_node(trie_node * node)
     if(node == NULL)
         error_exit("Malloc Failure");
 
-    node->is_final = 'N';
+    node->is_final = NO;
     node->current_children = 0;
     node->max_children = NUMBER_OF_CHILDREN;
     node->word=NULL;
@@ -41,7 +41,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
     char * word = strtok(NULL, " ");
     if( word == NULL )
     {
-        node->is_final = 'Y';
+        node->is_final = YES;
         return 1;
     }
     int a , b , m, found_word;
@@ -82,7 +82,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
         word = strtok(NULL, " ");
         if (word == NULL)
         {/*end of N-Gram*/
-            temp->children[spot].is_final = 'Y';
+            temp->children[spot].is_final = YES;
             return 1;
         }
         /*next word of our N-Gram*/
@@ -167,9 +167,9 @@ OK_SUCCESS trie_delete(hash_table* table,char* ngram)
     }
     stack_count--;
     if(stack_count>=0){
-        if(stack[stack_count].node->children[stack[stack_count].position].is_final=='Y')
+        if(stack[stack_count].node->children[stack[stack_count].position].is_final==YES)
         {/*It must be a final word*/
-            stack[stack_count].node->children[stack[stack_count].position].is_final='N';
+            stack[stack_count].node->children[stack[stack_count].position].is_final=NO;
             if(stack[stack_count].node->children[stack[stack_count].position].current_children==0)
             {//if it does not have children delete the node
                 delete_node_child(stack[stack_count].node,stack[stack_count].position);
@@ -191,9 +191,9 @@ OK_SUCCESS trie_delete(hash_table* table,char* ngram)
     }
     else
     {
-        if(hash_node->is_final=='Y')
+        if(hash_node->is_final==YES)
         {
-            hash_node->is_final='N';
+            hash_node->is_final=NO;
             if(hash_node->current_children==0)
             {
                 int return_value= hash_delete(table, hash_word);
@@ -208,7 +208,7 @@ OK_SUCCESS trie_delete(hash_table* table,char* ngram)
     }
     while(stack_count>=0){
         /*It is a middle word or the first*/
-        if(stack[stack_count].node->children[stack[stack_count].position].current_children==0 && stack[stack_count].node->children[stack[stack_count].position].is_final!='Y')
+        if(stack[stack_count].node->children[stack[stack_count].position].current_children==0 && stack[stack_count].node->children[stack[stack_count].position].is_final!=YES)
         {
             /*If there are not children and It is not a final*/
             delete_node_child(stack[stack_count].node,stack[stack_count].position);
@@ -221,7 +221,7 @@ OK_SUCCESS trie_delete(hash_table* table,char* ngram)
         }
         stack_count--;
     }
-    if(hash_node->current_children==0 && hash_node->is_final=='N')
+    if(hash_node->current_children==0 && hash_node->is_final==NO)
     {
         int return_value= hash_delete(table, hash_word);
         free(hash_word);
@@ -280,11 +280,13 @@ int binary_search_array(trie_node* array, int size, char* word, int* spot_ptr_ar
 }
 
 //binary search that returns the index in the array of the children
-int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg){
+int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg)
+{
     return binary_search_array(master_node->children, master_node->current_children, word, spot_ptr_arg);
 }
 
-OK_SUCCESS trie_node_clean(trie_node* node){
+OK_SUCCESS trie_node_clean(trie_node* node)
+{
     int i;
     for(i=0;i<node->current_children;i++)
     {//call the clean for all the children
@@ -293,4 +295,22 @@ OK_SUCCESS trie_node_clean(trie_node* node){
     free(node->word);
     free(node->children);
     return 1;
+}
+
+int compress(trie_node *node)
+{
+    trie_node* count_nodes;
+    count_nodes=node;
+    int i,loops=0;
+    while(count_nodes->current_children==1)
+    {
+        loops++;
+    }
+    if(loops==0)
+    {
+        return 0;
+    }
+    for(i = 0 ; i <loops ; i++){
+         int a;
+    }
 }

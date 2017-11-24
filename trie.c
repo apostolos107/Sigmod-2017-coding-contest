@@ -17,7 +17,7 @@ trie * init_trie()
         error_exit("Malloc Failure");
 
     my_trie->children = create_hash_table();
-
+    my_trie->is_static = -1;
     return my_trie;
 }
 
@@ -169,4 +169,11 @@ result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap)
     #endif
     clean_vector(bloom);
     return result;
+}
+
+void DFS(trie_node * root)
+{
+    trie_node * temp = root;
+
+
 }

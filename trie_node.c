@@ -18,6 +18,7 @@ trie_node* create_trie_node()
     node->current_children = 0;
     node->max_children = NUMBER_OF_CHILDREN;
     node->word=NULL;
+    node->compressed = NULL;
     node->children = malloc(node->max_children * sizeof(trie_node));
     return node;
 }
@@ -31,6 +32,7 @@ void init_trie_node(trie_node * node)
     node->current_children = 0;
     node->max_children = NUMBER_OF_CHILDREN;
     node->word=NULL;
+    node->compressed = NULL;
     node->children = malloc(node->max_children * sizeof(trie_node));
 }
 

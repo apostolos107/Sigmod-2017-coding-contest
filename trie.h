@@ -8,6 +8,7 @@
 
 typedef struct trie{
     hash_table * children;
+    signed char is_static;
 }trie;
 
 

@@ -11,11 +11,17 @@
 
 typedef int OK_SUCCESS;
 
+typedef struct ultra_node{
+    short * positions;
+    short counter;
+}ultra_node;
+
 typedef struct trie_node{
     char* word;
     signed char is_final;
     int current_children;
     int max_children;
+    struct ultra_node * compressed;
     struct trie_node* children;
 }trie_node;
 

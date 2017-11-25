@@ -44,6 +44,7 @@ int main (int argc, char* argv[])
 
     //if there is init file open it
     FILE* read_from=stdin;
+    int is_static=0;
     if(init_filename!=NULL){
         //open the file and make the init
         FILE* init_file = fopen(init_filename, "r");
@@ -51,6 +52,15 @@ int main (int argc, char* argv[])
             error_exit("Not good init File");
         }
         init_filename=NULL;
+        getline(&buf, &size, init_file);
+        if( strcmp(buf, "STATIC\n")==0 )
+        {
+            is_static=1;
+        }
+        else
+        {
+            is_static=0;
+        }
         while(1){
             int chars_read=0;
             chars_read=getline(&buf, &size, init_file);
@@ -80,6 +90,9 @@ int main (int argc, char* argv[])
     int chars_read=0;
     char* the_word=NULL;
     heap* my_heap = heap_create();
+    if( is_static==1 ){
+        trie_compress(my_triee);
+    }
     while(1){
         chars_read=getline(&buf, &size, read_from);
         if(chars_read==-1){

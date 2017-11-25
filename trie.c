@@ -171,44 +171,14 @@ result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap)
     return result;
 }
 
-
-void DFS(trie_node * root)
+void trie_compress(trie * my_trie)
 {
-    trie_node * temp = root;
-
-    trie_node ** stack = malloc(sizeof(trie_node *) * STACK_SIZE);
-    int end = 0;
-    int count = 0;
-    int max = STACK_SIZE;
-
-    compress(temp);
-    int i;
-    for(i = 0; i < temp->current_children; i++)
-    {   /*add the kids to stack */
-        if(count == max)
-        {
-            max *=2;
-            stack = realloc(stack, sizeof(trie_node *) * max);
-        }
-        stack[end] = & temp->children[i];
-        end ++;
+    int i, j;
+    hash_bucket *temp;
+    for(i = 0 ; i < my_trie->children->size ; i++)
+    {
+        temp = &my_trie->children->buckets[i];
+        for(j = 0 ; j < temp->current_children; j++)
+            DFS_for_compress(&temp->children[j]);
     }
-
-    temp = stack[end-1];
-    end --;
-    while(end > 0)
-    {   /*add the kids to stack */
-        compress(temp);
-        for(i = 0; i < temp->current_children; i++)
-        {   /*add the kids to queue */
-            if(count == max)
-            {
-                max *=2;
-                stack = realloc(stack, sizeof(trie_node *) * max);
-            }
-            stack[end] = & temp->children[i];
-            end ++;
-        }
-    }
-
 }

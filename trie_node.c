@@ -294,6 +294,11 @@ OK_SUCCESS trie_node_clean(trie_node* node)
     {//call the clean for all the children
         trie_node_clean(&node->children[i]);
     }
+    if(node->compressed != NULL)
+    {
+        free(node->compressed->positions);
+        free(node->compressed);
+    }
     free(node->word);
     free(node->children);
     return 1;
@@ -309,7 +314,7 @@ int compress(trie_node *node)
     //check how many compression must be done and the size of the final word
     while(count_nodes->current_children==1)
     {
-        final_word_size+=strlen(count_nodes->word);
+        final_word_size+=strlen(count_nodes->children[0].word);
         loops++;
         count_nodes=&count_nodes->children[0];
     }
@@ -323,19 +328,67 @@ int compress(trie_node *node)
     node->compressed->counter=loops+1;
     node->compressed->positions=malloc(sizeof(short)*(loops+1));
     //realloc the compressed word
-    node->word=realloc(node->word, final_word_size);
+    node->word=realloc(node->word, final_word_size*sizeof(char));
     //my word in the first position
     node->compressed->positions[0]=strlen(node->word)*node->is_final;
     //take the first children
     change_nodes=node->children;
     for(i = 0 ; i <loops ; i++){
+        // printf("eixa %s tha valw %s\n megethos %d \n\n",node->word, change_nodes->word, final_word_size );
         strcat(node->word, change_nodes->word);//add the next word
         node->compressed->positions[i+1]=strlen(change_nodes[0].word)*change_nodes[0].is_final;//write the lenght to the table position
         free(change_nodes[0].word);//free the word
-        delete_nodes=&change_nodes[0];//take the node must be deleted
+        delete_nodes=change_nodes;//take the node must be deleted
+        node->current_children = change_nodes[0].current_children;
+        node->max_children = change_nodes[0].max_children;
+
         change_nodes=change_nodes[0].children;//first take his children
         free(delete_nodes);//then free it
     }
     node->children=change_nodes;//change the node children to the final compressed node's childern
     return 1;
+}
+
+void DFS_for_compress(trie_node * root)
+{
+    trie_node * temp = root;
+
+    trie_node ** stack = malloc(sizeof(trie_node *) * STACK_SIZE);
+    int end = 0;
+    int max = STACK_SIZE;
+
+    compress(temp);
+    int i;
+    for(i = 0; i < temp->current_children; i++)
+    {   /*add the kids to stack */
+        if(end == max)
+        {   /* change the size of the stack */
+            max *=2;
+            stack = realloc(stack, sizeof(trie_node *) * max);
+        }
+        stack[end] = & temp->children[i];
+        end ++;
+    }
+    /* pop from stack */
+    if(end >0)
+        temp = stack[end-1];
+    end --;
+    while(end > 0)
+    {
+        compress(temp);
+        for(i = 0; i < temp->current_children; i++)
+        {   /* add the kids to stack */
+            if(end == max)
+            {   /* change the size of the stack */
+                max *=2;
+                stack = realloc(stack, sizeof(trie_node *) * max);
+            }
+            /* pop from stack */
+            stack[end] = & temp->children[i];
+            end ++;
+        }
+        temp = stack[end-1];
+        end --;
+    }
+    free(stack);
 }

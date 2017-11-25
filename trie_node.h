@@ -38,6 +38,6 @@ int binary_search_array(trie_node* array, int size, char* word, int* spot_ptr_ar
 int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg);
 OK_SUCCESS trie_node_clean(trie_node* node);
 int compress(trie_node* node);
-
+void DFS_for_compress(trie_node * root);
 
 #endif

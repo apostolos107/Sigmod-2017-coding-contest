@@ -16,7 +16,7 @@ typedef struct trie{
 
 trie * init_trie();
 OK_SUCCESS insert_ngram(trie * my_trie, char * ngram);
-void DFS(trie_node * root);
+void trie_compress(trie * my_trie);
 OK_SUCCESS trie_clean(trie** my_trie);
 OK_SUCCESS delete_ngram(trie * my_trie, char * ngram) ;
 result_of_search* search(trie* my_trie,char* the_ngram,struct heap* heap);

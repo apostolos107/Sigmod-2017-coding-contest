@@ -35,4 +35,6 @@ void hash_clean(hash_table ** table);
 int hash_bucket_delete(hash_bucket * bucket, char * word);
 int hash_delete(hash_table * table, char * word);
 
+struct trie_node  * static_hash_search(hash_table * table, char * word);
+
 #endif

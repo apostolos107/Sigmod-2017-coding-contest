@@ -281,6 +281,56 @@ int binary_search_array(trie_node* array, int size, char* word, int* spot_ptr_ar
     }
 }
 
+int static_binary_search_array(trie_node* array, int size, char* word, int* spot_ptr_arg){
+    int spot = 0;//the current spot
+    int a = 0;//the base index in array
+    int b = size;//the max index in array
+    int found_word = 0;//bool, 1 if found
+    int m;//the middle of hte [a,b]
+    if(size==0){
+        //if no childrens
+        if(spot_ptr_arg!=NULL){
+            *spot_ptr_arg=0;
+        }
+        return -1;
+    }
+    while((a <= b) && (a< size))
+    {
+        m = (a + b) /2;
+        int result_of_cmp  = -1;
+        if(array[m].compressed!=NULL){
+            result_of_cmp = strncmp(word, array[m].word, abs(array[m].compressed->positions[0]) );
+        }else{
+            result_of_cmp = strcmp(word, array[m].word);
+        }
+        if ( result_of_cmp == 0) { /*this sentence exist as far as here*/
+            spot = m;
+            found_word =1;
+            break;
+        }
+        else if( result_of_cmp < 0)
+        {/*word belongs before this child*/
+            b = m-1;
+            spot = m;
+        }
+        else if( result_of_cmp > 0)
+        {/*word belongs after this child*/
+            a = m+1;
+            spot = a;
+        }
+        // printf("A is %d , B is %d\n",a,b );
+
+    }
+    if(spot_ptr_arg!=NULL){
+        *spot_ptr_arg=spot;
+    }
+    if(found_word==0){
+        return -1;
+    }else{
+        return 1;
+    }
+}
+
 //binary search that returns the index in the array of the children
 int binary_search_kid(trie_node* master_node,char* word,int* spot_ptr_arg)
 {

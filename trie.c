@@ -188,12 +188,21 @@ void trie_compress(trie * my_trie)
     }
 }
 
+int sum_index(short* array,short index){
+    int tot_sum=0;
+    for (size_t i = 0; i < index; i++) {
+        tot_sum+=abs(array[i]);
+    }
+    return tot_sum;
+}
+
 int search_static_word(trie_node* cur_node, char* current_word,int spot_in_dynamic){
     int result_of_cmp;
     if( spot_in_dynamic == cur_node->compressed->counter -1){
-        result_of_cmp = strcmp(current_word, &cur_node->word[ abs(cur_node->compressed->positions[spot_in_dynamic]) ] );
+        result_of_cmp = strcmp(current_word, &cur_node->word[ sum_index(cur_node->compressed->positions, spot_in_dynamic) ] );
     }else{
-        result_of_cmp = strncmp(current_word, &cur_node->word[ abs(cur_node->compressed->positions[spot_in_dynamic]) ], abs(cur_node->compressed->positions[spot_in_dynamic+1]) - abs(cur_node->compressed->positions[spot_in_dynamic]) );
+        int start = sum_index(cur_node->compressed->positions, spot_in_dynamic);
+        result_of_cmp = strncmp(current_word, &cur_node->word[ start ], abs(cur_node->compressed->positions[spot_in_dynamic]) );
     }
     if(result_of_cmp==0){
         return 1;

@@ -406,7 +406,6 @@ void DFS_for_compress(trie_node * root)
     trie_node ** stack = malloc(sizeof(trie_node *) * STACK_SIZE);
     int end = 0;
     int max = STACK_SIZE;
-
     compress(temp);
     int i;
     for(i = 0; i < temp->current_children; i++)
@@ -419,12 +418,14 @@ void DFS_for_compress(trie_node * root)
         stack[end] = & temp->children[i];
         end ++;
     }
-    /* pop from stack */
-    if(end >0)
-        temp = stack[end-1];
-    end --;
+
     while(end > 0)
     {
+        /* pop from stack */
+        temp = stack[end-1];
+        end --;
+
+
         compress(temp);
         for(i = 0; i < temp->current_children; i++)
         {   /* add the kids to stack */
@@ -433,12 +434,10 @@ void DFS_for_compress(trie_node * root)
                 max *=2;
                 stack = realloc(stack, sizeof(trie_node *) * max);
             }
-            /* pop from stack */
+            /* push to stack */
             stack[end] = & temp->children[i];
             end ++;
         }
-        temp = stack[end-1];
-        end --;
     }
     free(stack);
 }

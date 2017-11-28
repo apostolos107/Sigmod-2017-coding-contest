@@ -281,6 +281,19 @@ int binary_search_array(trie_node* array, int size, char* word, int* spot_ptr_ar
     }
 }
 
+int my_cmp(char* word1, char* word2,int max_bytes_word2){
+    int res = strncmp(word1, word2,max_bytes_word2);
+    if(res==0){
+        if(word1[max_bytes_word2]=='\0'){
+            return 0;
+        }else{
+            return 1;
+        }
+    }else{
+        return res;
+    }
+}
+
 int static_binary_search_array(trie_node* array, int size, char* word, int* spot_ptr_arg){
     int spot = 0;//the current spot
     int a = 0;//the base index in array
@@ -299,7 +312,7 @@ int static_binary_search_array(trie_node* array, int size, char* word, int* spot
         m = (a + b) /2;
         int result_of_cmp  = -1;
         if(array[m].compressed!=NULL){
-            result_of_cmp = strncmp(word, array[m].word, abs(array[m].compressed->positions[0]) );
+            result_of_cmp = my_cmp(word, array[m].word, abs(array[m].compressed->positions[0]) );
         }else{
             result_of_cmp = strcmp(word, array[m].word);
         }

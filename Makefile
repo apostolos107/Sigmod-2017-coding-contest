@@ -32,9 +32,6 @@ trie.o: trie.c
 trie_node.o: trie_node.c
 	$(CC) $(FLAGS) $?
 
-heap_hash.o: heap_hash.c
-	$(CC) $(FLAGS) $?
-
 tools.o: tools.c
 	$(CC) $(FLAGS) $?
 
@@ -47,7 +44,7 @@ heap_hash.o: heap_hash.c
 test: test_entry
 	./test_entry
 
-test_entry: test_entry.o trie.o trie_node.o tools.o heap.o
+test_entry: trie.o hash_table.o trie_node.o tools.o heap.o murmur3.o bloom_filter.o heap_hash.o test_entry.o
 	$(CC) -o $@ $?
 
 test_entry.o: test_entry.c

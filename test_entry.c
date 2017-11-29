@@ -5,18 +5,23 @@
 
 #include "trie.h"
 #include "heap.h"
+#include "heap.h"
+#include "hash_table.h"
 
+bloom_filter * bloom ;
 
 void test_insert_trie(char * sentence)
 {
-    trie * mytree = malloc(sizeof(trie));
-    mytree->root = init_trie();
+    trie * mytree;
+    mytree = init_trie();
+    heap* my_heap = heap_create();
 
     int result = insert_ngram(mytree, sentence);
     assert(result == 1);
 
-    if(!(sentence == NULL || strcmp(sentence, "")==0))
-        assert(strcmp(mytree->root->children[0].word, "hey")==0);
+    if(!(sentence == NULL || strcmp(sentence, "")==0)){
+        assert(hash_search(mytree->children,"hey")!=NULL);
+    }
 
     assert(trie_clean(&mytree) == 1);
 }
@@ -24,7 +29,8 @@ void test_insert_trie(char * sentence)
 //init a trie with some ngrams
 trie* init_test_trie(){
     trie * mytree = malloc(sizeof(trie));
-    mytree->root = init_trie();
+    heap* top = heap_create();
+    mytree = init_trie();
 
     // check the capitals
     char sentence1[]="IS A RED CAR";
@@ -40,14 +46,16 @@ trie* init_test_trie(){
     assert(result == 1);
 
     char search1[]="Is a Red Car";
-    result_of_search* search_result=search(mytree,search1);
+    result_of_search* search_result=search(mytree,search1,top);
     assert(search_result->num_of_results==1);
     delete_result(&search_result);
 
     char search2[]="iS A rEd car";
-    search_result=search(mytree,search2);
+    search_result=search(mytree,search2,top);
     assert(search_result->num_of_results==0);
     delete_result(&search_result);
+
+    heap_destroy(&top);
     return mytree;
 }
 
@@ -57,6 +65,8 @@ void test_realloc(trie* mytree){
     char* sentence;
     char* temp;
     result_of_search* search_result;
+    heap* top = heap_create();
+
     sentence=malloc(sizeof(char)*(NUMBER_OF_CHILDREN+5));
     strcpy(sentence,"is ");
     for( i = 0 ; i <= NUMBER_OF_CHILDREN ; i++ )
@@ -68,16 +78,21 @@ void test_realloc(trie* mytree){
         free(temp);
         assert(result == 1);
     }
-    search_result=search(mytree,sentence);
+    search_result=search(mytree,sentence,top);
     assert(search_result->num_of_results==1);
     delete_result(&search_result);
     free(sentence);
+
+    heap_destroy(&top);
+
 }
 
 //check the delete
 void test_delete(trie* mytree){
     int result;
     result_of_search* search_result;
+    heap* top = heap_create();
+
     if(NUMBER_OF_CHILDREN==0){
         printf("The number of children is 0\n");
         assert(NUMBER_OF_CHILDREN>0);
@@ -91,11 +106,12 @@ void test_delete(trie* mytree){
     //check the delete
     char delete_sentence0[]="is a";
     delete_ngram(mytree,delete_sentence0);
-    search_result=search(mytree,delete_sentence0);
+    search_result=search(mytree,delete_sentence0,top);
     //the results must be 1 because of the "is" ngram and because we deleted "is a"
     // else it is should be 0 or 2 if the delete is not correct
     assert(search_result->num_of_results==1);
     delete_result(&search_result);
+    heap_destroy(&top);
 }
 
 void test_insert_search_delete()
@@ -145,35 +161,75 @@ void test_heap_inserts(){
     heap_insert(my_heap, "wow");
     heap_insert(my_heap, "wow");
 
-    // heap_node heap_1,heap_2;
-    // heap_1.content=copy_string("a");
-    // heap_1.appeared=0;
-    //
-    // heap_2.content=copy_string("b");
-    // heap_2.appeared=0;
+    assert(strcmp(my_heap->root->content,"wow")==0);
 
-    // printf("%d\n",cmp_heap_node(&heap_1, &heap_2));
-    heap_print_top_k(my_heap, 6);
-    // printf("%s(%d)\n", my_heap->root->content, my_heap->root->appeared);
-    // printf("%s(%d)\t", my_heap->root->left->content, my_heap->root->left->appeared);
-    // printf("%s(%d)\n", my_heap->root->right->content, my_heap->root->right->appeared);
     heap_destroy(&my_heap);
 
 }
 
 void test_heap_cmp(){
-    heap_node* heap_1,heap_2;
+    heap_node heap_1,heap_2;
+    heap_1.content=copy_string("a");
+    heap_1.appeared=0;
+
+    heap_2.content=copy_string("b");
+    heap_2.appeared=0;
+
+    assert(cmp_heap_node(&heap_1, &heap_2)>0);
 
 }
+
+void is_ok(heap_node* cur_node, int depth){
+    if(cur_node==NULL){
+        return ;
+    }
+    heap_node *left = cur_node->left;
+    heap_node *right = cur_node->right;
+    if(left!=NULL){
+        assert(cmp_heap_node(left, cur_node)<0);
+        is_ok(left,depth+1);
+    }
+    if(right!=NULL){
+        assert(cmp_heap_node(right, cur_node)<0);
+        is_ok(right,depth+1);
+    }
+}
+
+int test_heap_util(){
+    heap* my_heap = heap_create();
+    heap_insert(my_heap, "good thing");
+    heap_insert(my_heap, "good thing");
+    heap_insert(my_heap, "good thing");
+    heap_insert(my_heap, "good");
+    heap_insert(my_heap, "good");
+    heap_insert(my_heap, "good");
+    heap_insert(my_heap, "good");
+    heap_insert(my_heap, "dog");
+    heap_insert(my_heap, "dog");
+    heap_insert(my_heap, "cat");
+    heap_insert(my_heap, "cat");
+    heap_insert(my_heap, "wow");
+    heap_insert(my_heap, "wow");
+    heap_insert(my_heap, "wow");
+    heap_insert(my_heap, "wow");
+    heap_insert(my_heap, "wow");
+
+    is_ok(my_heap->root,0);
+}
+
 void test_heap(){
     test_heap_cmp();
     test_heap_inserts();
+    assert(test_heap_util()==0);
 }
- int main(void)
- {
+
+int main(void)
+{
+    bloom=bloom_filter_init();
     test_insert_cases();
     test_insert_search_delete();
     test_heap();
+    bloom_filter_destroy(&bloom);
     printf("Passed the test!\n");
     return 0;
 }

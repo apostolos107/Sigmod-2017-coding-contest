@@ -1,13 +1,18 @@
 #ifndef __BLOOM_FILTER__
 #define __BLOOM_FILTER__
 
-#include "murmur3.h"
 #include <string.h>
 
 #define SIZE 200000
 #define HASH 3
 
+#include <stdint.h>
+#include <stddef.h>
+
 extern struct bloom_filter* bloom;
+
+
+
 
 
 typedef struct bloom_filter{
@@ -23,5 +28,7 @@ int* hash_results(char*,bloom_filter*);
 int bloom_check(char*,bloom_filter*);
 void print_vector(bloom_filter*);
 void clean_vector(bloom_filter*);
+
+unsigned long murmur3(const uint8_t* key, size_t len, unsigned long seed);
 
 #endif

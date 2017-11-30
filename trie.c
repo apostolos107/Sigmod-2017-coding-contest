@@ -204,7 +204,7 @@ int search_static_word(trie_node* cur_node, char* current_word,int spot_in_dynam
         int start = sum_index(cur_node->compressed->positions, spot_in_dynamic);
         result_of_cmp = strncmp(current_word, &cur_node->word[ start ], abs(cur_node->compressed->positions[spot_in_dynamic]) );
     }
-    if(result_of_cmp==0){
+    if( result_of_cmp==0 && current_word[ abs(cur_node->compressed->positions[spot_in_dynamic]) ]=='\0' ){
         return 1;
     }else{
         return 0;

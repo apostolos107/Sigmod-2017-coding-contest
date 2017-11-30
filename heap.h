@@ -16,13 +16,14 @@ typedef struct heap{
     int number_of_nodes;
 } heap;
 
-heap_node* create_node();
+heap_node* create_node();//allocate memomry and return a new none
 void init_heap_node(heap_node*);//init's the heap node (already allocated)
 heap* heap_create();//create and initialize the heap
 heap_node* heap_insert(heap* the_heap,char* word);//inserts a word or if exists increase the counter
 void heap_destroy(heap** the_heap);//destroys the heap
 void heap_print_top_k(heap* the_heap, int k);//prints the top k
 
+//compare two heap nodes (returns like strcmp)
 int cmp_heap_node(struct heap_node* heap_node1, struct heap_node* heap_node2);
 
 #endif

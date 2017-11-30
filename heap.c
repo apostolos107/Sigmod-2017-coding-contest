@@ -64,7 +64,6 @@ void heapify(heap* the_heap, heap_node* start_node){
     parrent=start_node->parrent;
     if( cmp_heap_node(start_node, parrent)>0 ){
         move_up(the_heap, start_node);
-        // heap_swap_nodes(the_heap, start_node, parrent);
 
         heapify(the_heap,start_node);//now heapify the parrent
     }else{//all iz well
@@ -78,14 +77,11 @@ heap_node* heap_insert(heap* the_heap, char* word){
     if (the_heap->number_of_nodes==0){
         //if it's the first node in the heap
         cur_node = the_heap->root =heap_hash_insert(the_heap->heap_hash, word);//add to heap and get the node
-        // cur_node=the_heap->root=create_node();//all the pointers are NULL
-        // cur_node->appeared=1;
-        // cur_node->content=copy_string(word);
+
         the_heap->number_of_nodes++;
         return cur_node;
     }
     //find the node that we will insert the new entry
-    // cur_node = heap_search(the_heap->root, word);//search if the words already exists
     cur_node = heap_hash_search(the_heap->heap_hash, word);
     if(cur_node!=NULL){
         //if the words exists increase and heapify
@@ -95,11 +91,10 @@ heap_node* heap_insert(heap* the_heap, char* word){
     }else{
         //find where should be insert
         cur_node=find_the_parent(the_heap,&last_step,the_heap->number_of_nodes+1);
-        // heap_node *new_node=create_node();//create the new node
+
         heap_node *new_node=heap_hash_insert(the_heap->heap_hash, word);//create the new node
         new_node->parrent=cur_node;
-        // new_node->content=copy_string(word);
-        // new_node->appeared=1;
+
         if(last_step==0){
             cur_node->left=new_node;
         }else if(last_step==1){
@@ -264,7 +259,8 @@ void heap_list_add_node(heap_list_node** the_node,heap_node* new_entrie ){
     }
 }
 
-void heap_list_delete_list(heap_list_node** the_list){//eleutheronei ton xwro pou exei desmeutei gia thn lista
+//eleutheronei ton xwro pou exei desmeutei gia thn lista
+void heap_list_delete_list(heap_list_node** the_list){
     heap_list_node *cur_node,*temp_node;
     cur_node=*the_list;
     while(cur_node!=NULL){
@@ -280,17 +276,17 @@ void heap_print_top_k(heap* the_heap, int k){
     if(k==0) return;
     heap_list_node *the_heap_list = NULL,*temp_list;
     //no need to add the first one
-    // heap_list_add_node(&the_heap_list, the_heap->root);//add the root to the list(initialize it)
 
     heap_node *left,*right;
 //print the first one
     if(the_heap->root==NULL){
         return ;
+    }else{
+        printf("Top: %s",the_heap->root->content);
+        heap_list_add_node(&the_heap_list,the_heap->root->left);
+        heap_list_add_node(&the_heap_list,the_heap->root->right);
+        printed_nodes++;
     }
-    printf("Top: %s",the_heap->root->content);
-    heap_list_add_node(&the_heap_list,the_heap->root->left);
-    heap_list_add_node(&the_heap_list,the_heap->root->right);
-    printed_nodes++;
 
     while (printed_nodes<k && printed_nodes<the_heap->number_of_nodes) {
         heap_node* cur_node;
@@ -305,7 +301,7 @@ void heap_print_top_k(heap* the_heap, int k){
         printed_nodes++;
         //print the node
         printf("|%s", cur_node->content);
-        //bgale apo thn lista thn kefalh
+        //pop the head
         temp_list=the_heap_list;
         the_heap_list=the_heap_list->next;//move list to the next element
         free(temp_list);//free the first elemnt
@@ -318,17 +314,7 @@ void heap_print_top_k(heap* the_heap, int k){
 }
 
 void heap_destroy(heap** the_heap){
-    void delete_sub_heap(heap_node *cur_node){
-        if(cur_node==NULL){
-            return ;
-        }
-        delete_sub_heap(cur_node->left);
-        delete_sub_heap(cur_node->right);
-        free(cur_node->content);
-        free(cur_node);
-    }
 
-    // delete_sub_heap( (*the_heap)->root );
     heap_hash_clean( &((*the_heap)->heap_hash) );
     free(*the_heap);
 }

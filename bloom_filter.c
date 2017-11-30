@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include "bloom_filter.h"
-#include "murmur3.h"
 
 unsigned long my_word(char * str)
 {   /* hash function that converts string to long value */

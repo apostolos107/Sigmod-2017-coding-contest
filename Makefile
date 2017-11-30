@@ -20,9 +20,6 @@ ngrams.o: ngrams.c
 hash_table.o: hash_table.c
 	$(CC) $(FLAGS) $?
 
-murmur3.o: murmur3.c
-	$(CC) $(FLAGS) $?
-
 bloom_filter.o: bloom_filter.c
 	$(CC) $(FLAGS) $?
 

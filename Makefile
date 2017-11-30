@@ -41,9 +41,6 @@ tools.o: tools.c
 heap.o: heap.c
 	$(CC) $(FLAGS) $?
 
-heap_hash.o: heap_hash.c
-	$(CC) $(FLAGS) $?
-
 test: test_entry
 	./test_entry
 

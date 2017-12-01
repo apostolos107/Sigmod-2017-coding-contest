@@ -7,22 +7,6 @@
 #include "trie_node.h"
 // #include "hash_table.h"
 
-trie_node* create_trie_node()
-{
-    trie_node * node = malloc(sizeof(trie_node));
-
-    if(node == NULL)
-        error_exit("Malloc Failure");
-
-    node->is_final = NO;
-    node->current_children = 0;
-    node->max_children = NUMBER_OF_CHILDREN;
-    node->word=NULL;
-    node->compressed = NULL;
-    node->children = malloc(node->max_children * sizeof(trie_node));
-    return node;
-}
-
 void init_trie_node(trie_node * node)
 {
     if(node == NULL)
@@ -33,7 +17,8 @@ void init_trie_node(trie_node * node)
     node->max_children = NUMBER_OF_CHILDREN;
     node->word=NULL;
     node->compressed = NULL;
-    node->children = malloc(node->max_children * sizeof(trie_node));
+    node->children = NULL;
+    // node->children = malloc(node->max_children * sizeof(trie_node));
 }
 
 OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
@@ -53,6 +38,9 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram)
     {
         if(temp->current_children == 0 )
         { /*we need to add a new child cause this node has 0 of them */
+            if(temp->children==NULL){
+                temp->children=malloc(temp->max_children*sizeof(trie_node));
+            }
             init_trie_node(&temp->children[0]);
             temp->children[0].word = copy_string(word);
             spot = 0;
@@ -363,7 +351,9 @@ OK_SUCCESS trie_node_clean(trie_node* node)
         free(node->compressed);
     }
     free(node->word);
-    free(node->children);
+    if(node->children!=NULL){
+        free(node->children);
+    }
     return 1;
 }
 

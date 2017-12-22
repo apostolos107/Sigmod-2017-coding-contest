@@ -9,10 +9,6 @@
 #include <stdint.h>
 #include <stddef.h>
 
-extern struct bloom_filter* bloom;
-
-
-
 
 
 typedef struct bloom_filter{

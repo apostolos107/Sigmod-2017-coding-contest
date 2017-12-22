@@ -143,7 +143,7 @@ int word_exists(result_of_search *result, char* first_word, char* last_word){
     return 0;
 }
 
-void add_to_result(result_of_search* result,char* the_word,char* first_word, heap* my_heap){
+void add_to_result(result_of_search* result,char* the_word,char* first_word, heap* my_heap, bloom_filter * bloom){
     char *init_the_word=the_word, *init_first_word=first_word;
     result->num_of_results++;
     int bytes_wrote;

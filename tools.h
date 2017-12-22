@@ -3,6 +3,7 @@
 
 #include "trie_node.h"
 #include "heap.h"
+#include "bloom_filter.h"
 
 int count_words(char * s);
 char * copy_string(char * s);
@@ -23,5 +24,6 @@ typedef struct stack_node{
 
 result_of_search* new_result(int size);
 void delete_result(struct result_of_search** result);
-void add_to_result(struct result_of_search* result, char* the_word, char* first_word, struct heap* my_heap);
+void add_to_result(struct result_of_search* result, char* the_word, char* first_word, struct heap* my_heap, struct bloom_filter* bloom);
+
 #endif

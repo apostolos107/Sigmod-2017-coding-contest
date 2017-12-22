@@ -77,12 +77,14 @@ char* get_word(char* cur_ptr, char* original_ptr, int init_size){
     temp[0]='\0';
     return &cur_ptr[num_of_white_spaces];
 }
-result_of_search* static_search(trie* my_trie, char* the_ngram,heap* my_heap);
+result_of_search* static_search(trie* my_trie, char* the_ngram,heap* my_heap, bloom_filter * bloom);
 
 result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap)
 {
+    bloom_filter * bloom ;
+    bloom=bloom_filter_init();
     if(my_trie->is_static==1){
-        return static_search(my_trie, the_ngram, my_heap);
+        return static_search(my_trie, the_ngram, my_heap, bloom);
     }
     #if COPY_ON_SEARCH==0
         char* current_sub_str=the_ngram;//just get the pointer to the initial string
@@ -112,7 +114,7 @@ result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap)
         if(current_word!=NULL){
             cur_node = hash_search(root_hash_table, current_word);//search in the hash table
             if(cur_node!=NULL && cur_node->is_final==YES){//if found and it's final
-                add_to_result(result,current_word,current_sub_str, my_heap);//add to the result
+                add_to_result(result,current_word,current_sub_str, my_heap, bloom);//add to the result
             }
             current_word=get_word(&current_word[strlen(current_word)+1], copied_string, original_size);//go to the next word
         }
@@ -127,7 +129,7 @@ result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap)
                     // printf("\t and it's final|SO I ADD TO RESULT|\n");
 
                     // printf("I add[%s]\n",current_sub_str);
-                    add_to_result(result,current_word,current_sub_str, my_heap);
+                    add_to_result(result,current_word,current_sub_str, my_heap, bloom);
                 }
                 cur_node=&cur_node->children[spot_of_word];//go deeper
             } else {
@@ -171,7 +173,8 @@ result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap)
     #if COPY_ON_SEARCH!=0
         free(copied_string);//nessasery only if the string is beeing copied
     #endif
-    clean_vector(bloom);
+    // clean_vector(bloom);
+    bloom_filter_destroy(&bloom);
     return result;
 }
 
@@ -211,7 +214,7 @@ int search_static_word(trie_node* cur_node, char* current_word,int spot_in_dynam
     }
 }
 
-result_of_search* static_search(trie* my_trie, char* the_ngram,heap* my_heap)
+result_of_search* static_search(trie* my_trie, char* the_ngram,heap* my_heap, bloom_filter * bloom)
 {
     #if COPY_ON_SEARCH==0
         char* current_sub_str=the_ngram;//just get the pointer to the initial string
@@ -243,7 +246,7 @@ result_of_search* static_search(trie* my_trie, char* the_ngram,heap* my_heap)
             cur_node = static_hash_search(root_hash_table, current_word);//search in the hash table
             spot_in_dynamic=0;
             if(cur_node!=NULL && ( (cur_node->compressed==NULL && cur_node->is_final==YES) || (cur_node->compressed!=NULL && cur_node->compressed->positions[spot_in_dynamic] > 0))){//if found and it's final
-                add_to_result(result,current_word,current_sub_str, my_heap);//add to the result
+                add_to_result(result,current_word,current_sub_str, my_heap, bloom);//add to the result
             }
             current_word=get_word(&current_word[strlen(current_word)+1], copied_string, original_size);//go to the next word
         }
@@ -266,7 +269,7 @@ result_of_search* static_search(trie* my_trie, char* the_ngram,heap* my_heap)
                     // printf("\t and it's final|SO I ADD TO RESULT|\n");
 
                     // printf("I add[%s]\n",current_sub_str);
-                    add_to_result(result,current_word,current_sub_str, my_heap);
+                    add_to_result(result,current_word,current_sub_str, my_heap, bloom);
                 }
             } else {
                 // printf("\tNOT FOUND at %d\n",spot_of_word);
@@ -309,6 +312,6 @@ result_of_search* static_search(trie* my_trie, char* the_ngram,heap* my_heap)
     #if COPY_ON_SEARCH!=0
         free(copied_string);//nessasery only if the string is beeing copied
     #endif
-    clean_vector(bloom);
+    bloom_filter_destroy(&bloom);
     return result;
 }

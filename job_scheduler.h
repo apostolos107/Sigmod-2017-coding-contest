@@ -23,7 +23,13 @@ typedef struct job_scheduler{
     pthread_mutex_t mut_finished_f;
     pthread_cond_t cond_finished_f;
 
+    pthread_mutex_t mut_heap_update;
+    pthread_cond_t cond_heap_update;
 
+    int heap_busy;
+    int finished_jobs;
+
+    int exit_programm;
     queue* my_queue;
     int threads_amount;
 }job_scheduler;

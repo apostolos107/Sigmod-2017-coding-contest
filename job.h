@@ -4,6 +4,7 @@
 #define QUERY 'Q'
 
 #include "tools.h"
+#include "trie.h"
 
 typedef struct job{
     char type;
@@ -11,6 +12,7 @@ typedef struct job{
     int print_position;
     int current_version;
     result_of_search* results;
+    trie* my_trie;
 }job;
 
 

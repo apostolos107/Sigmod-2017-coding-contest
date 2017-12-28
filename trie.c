@@ -86,7 +86,7 @@ char* get_word(char* cur_ptr, char* original_ptr, int init_size){
     temp[0]='\0';
     return &cur_ptr[num_of_white_spaces];
 }
-result_of_search* static_search(trie* my_trie, char* the_ngram,heap* my_heap, bloom_filter * bloom);
+result_of_search* static_search(trie* my_trie, char* the_ngram, bloom_filter * bloom);
 
 int is_alive(trie_node* cur_node, int asked_version){
     if(cur_node==NULL){
@@ -113,12 +113,12 @@ int is_final(trie_node* cur_node, int asked_version){
     }
 }
 
-result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap, int q_version)
+result_of_search* search(trie* my_trie, char* the_ngram, int q_version)
 {
     bloom_filter * bloom ;
     bloom=bloom_filter_init();
     if(my_trie->is_static==1){
-        return static_search(my_trie, the_ngram, my_heap, bloom);
+        return static_search(my_trie, the_ngram, bloom);
     }
     #if COPY_ON_SEARCH==0
         char* current_sub_str=the_ngram;//just get the pointer to the initial string
@@ -248,7 +248,7 @@ int search_static_word(trie_node* cur_node, char* current_word,int spot_in_dynam
     }
 }
 
-result_of_search* static_search(trie* my_trie, char* the_ngram,heap* my_heap, bloom_filter * bloom)
+result_of_search* static_search(trie* my_trie, char* the_ngram, bloom_filter * bloom)
 {
     #if COPY_ON_SEARCH==0
         char* current_sub_str=the_ngram;//just get the pointer to the initial string

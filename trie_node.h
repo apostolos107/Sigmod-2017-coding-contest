@@ -31,7 +31,7 @@ typedef struct trie_node{
 trie_node* create_trie_node();
 void init_trie_node(trie_node * node);
 OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram);
-OK_SUCCESS trie_delete(hash_table * table,char* ngram);
+OK_SUCCESS trie_delete(hash_table * table,char* ngram,int current_version);
 OK_SUCCESS delete_node_child(trie_node* node,int position);
 /*  binary search that returns 1 if word found and -1 if not found
     if it's not NULL contains the spot that the search stoped

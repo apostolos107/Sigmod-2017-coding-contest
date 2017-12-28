@@ -1,6 +1,7 @@
 #ifndef __HEAP__STRUCT
 #define __HEAP__STRUCT
 #include "heap_hash.h"
+#include <pthread.h>
 
 typedef struct heap_node {
     struct heap_node* parrent;
@@ -14,6 +15,11 @@ typedef struct heap{
     heap_node* root;
     struct heap_hash_table* heap_hash;
     int number_of_nodes;
+
+    pthread_mutex_t mut_heap;
+    pthread_cond_t cond_heap;
+    int heap_busy;
+
 } heap;
 
 heap_node* create_node();//allocate memomry and return a new none

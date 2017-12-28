@@ -5,6 +5,7 @@
 #include "tools.h"
 #include "trie.h"
 #include "heap.h"
+#include "job_scheduler.h"
 
 #define CHAR_BUFFER_SIZE 1024
 
@@ -94,6 +95,9 @@ int main (int argc, char* argv[])
         //if it's a static file, compress before continue
         trie_compress(my_triee);
     }
+//create job scheduler
+
+    job_scheduler* my_scheduler = initialize_scheduler();
     while(1){
         chars_read=getline(&buf, &size, read_from);
         if(chars_read==-1){
@@ -120,17 +124,10 @@ int main (int argc, char* argv[])
                 update_version(my_triee);
             }
             last_function = 'Q';
+            job* new_job = give_me_job(my_scheduler);
+            update_job(new_job,'Q',the_word,my_triee->version,my_triee,my_heap);
+            submit_job(my_scheduler,new_job);
             // printf("---Question{%s}\n", the_word);
-            result_of_search* result = search(my_triee,the_word, my_heap,my_triee->version);
-            if(result->num_of_results!=0){
-                result->cur_word[strlen(result->cur_word)-1]='\0';
-                // printf("====%s\n",result->cur_word);
-                printf("%s\n",result->cur_word);
-            }else{
-                // printf("====-1\n");
-                printf("-1\n");
-            }
-            delete_result(&result);
         }else
         if(buf[0]=='A'){
             the_word= &buf[2];
@@ -155,6 +152,23 @@ int main (int argc, char* argv[])
             delete_ngram(my_triee, the_word);
 
         }else if(buf[0]=='F'){
+            execute_all_jobs(my_scheduler);
+            wait_all_tasks_finish(my_scheduler);
+            int j;
+            result_of_search* result;
+            queue* my_queue = my_scheduler->my_queue;
+            for(j = 0 ; j < my_queue->amount_of_jobs; j++){
+                result = my_queue->my_jobs[j].results;
+                if(result->num_of_results!=0){
+                    result->cur_word[strlen(result->cur_word)-1]='\0';
+                    // printf("====%s\n",result->cur_word);
+                    printf("%s\n",result->cur_word);
+                }else{
+                    // printf("====-1\n");
+                    printf("-1\n");
+                }
+            }
+            clean_job_table(my_scheduler);
             int k=0;
             sscanf(buf, "F %d",&k);
             if(k!=0){
@@ -169,6 +183,7 @@ int main (int argc, char* argv[])
     trie_clean(&my_triee);
 //    hash_clean(&my_triee->children);
     free(my_triee);
+    destroy_job_scheduler(&my_scheduler);
 //free whatever is allocated
     heap_destroy(&my_heap);
     free(buf);

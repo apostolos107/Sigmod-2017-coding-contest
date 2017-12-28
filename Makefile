@@ -2,7 +2,7 @@ SOURCE = ngrams.c trie.c hash_table.c trie_node.c tools.c heap.c  bloom_filter.c
 OBJS = ngrams.o trie.o hash_table.o trie_node.o tools.o heap.o  bloom_filter.o heap_hash.o job_scheduler.o job.o
 EXEC = NGrams.exe
 CC	= gcc
-FLAGS   = -g -c -O2 -lpthreads
+FLAGS   = -g -c -O2
 FILES_FOLDER = test_files
 all: clean $(EXEC)
 
@@ -12,7 +12,7 @@ test_file: all
 
 
 $(EXEC): $(OBJS)
-	$(CC) -g $? -o $@
+	$(CC) -g $? -o $@ -lpthread
 
 ngrams.o: ngrams.c
 	$(CC) $(FLAGS) $?

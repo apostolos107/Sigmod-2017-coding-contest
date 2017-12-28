@@ -1,6 +1,9 @@
 #include "job_scheduler.h"
 #include "trie.h"
 #include "job.h"
+#include <pthread.h>
+
+void *scheduler_worker(void* arg_scheduler);
 
 queue* create_queue(){
     queue* myqueue;
@@ -18,9 +21,6 @@ job_scheduler* initialize_scheduler(){
     my_job_scheduler->threads_amount=THREADS_AMOUNT;
     my_job_scheduler->threads=malloc(sizeof(pthread_t)*my_job_scheduler->threads_amount);
     int i;
-    // for(i=0 ; i< my_job_scheduler->threads_amount ; i++ ){
-    //     pthread_create(&my_job_scheduler->threads[i],NULL,job,args );
-    // }
     pthread_mutex_init(&my_job_scheduler->mut_get_a_job, 0);
     pthread_mutex_init(&my_job_scheduler->mut_finished_f, 0);
     pthread_mutex_init(&my_job_scheduler->mut_heap_update, 0);
@@ -28,6 +28,9 @@ job_scheduler* initialize_scheduler(){
     pthread_cond_init(&my_job_scheduler->cond_get_a_job, 0);
     pthread_cond_init(&my_job_scheduler->cond_finished_f, 0);
     pthread_cond_init(&my_job_scheduler->cond_heap_update, 0);
+    for(i=0 ; i< my_job_scheduler->threads_amount ; i++ ){
+        pthread_create(&my_job_scheduler->threads[i], NULL, scheduler_worker, (void*) my_job_scheduler );
+    }
 
     my_job_scheduler->heap_busy = 0;//noone is writting on the heap
     my_job_scheduler->finished_jobs = 0;
@@ -37,27 +40,63 @@ job_scheduler* initialize_scheduler(){
     return my_job_scheduler;
 }
 
-void submit_job(queue* my_queue,job* myjob){
+void execute_all_jobs(job_scheduler* my_scheduler){
+    pthread_cond_signal(&my_scheduler->cond_get_a_job);
+    return;
+}
+
+void wait_all_tasks_finish(job_scheduler* my_scheduler){
+    pthread_mutex_lock(&my_scheduler->mut_finished_f);
+    if(my_scheduler->finished_jobs<my_scheduler->my_queue->amount_of_jobs){
+        pthread_cond_wait(&my_scheduler->cond_finished_f, &my_scheduler->mut_finished_f);
+    }
+    return;
+}
+
+job* give_me_job(job_scheduler* my_scheduler){
+    queue* my_queue = my_scheduler->my_queue;
     if(my_queue->amount_of_jobs==my_queue->size){
         my_queue->size+=JOBS_AMOUNT;
         my_queue->my_jobs=realloc(my_queue->my_jobs,sizeof(job)*(my_queue->size));
     }
-    my_queue->my_jobs[my_queue->amount_of_jobs]=*myjob;
     my_queue->amount_of_jobs++;
+    return &my_queue->my_jobs[my_queue->amount_of_jobs-1];
 }
 
-void clean_job_table(queue* my_queue){
+void submit_job(job_scheduler* my_scheduler,job* myjob){
+    my_scheduler->my_queue->my_jobs[my_scheduler->my_queue->amount_of_jobs-1]=*myjob;
+}
+
+void clean_job_table(job_scheduler* my_scheduler){
+    queue* my_queue = my_scheduler->my_queue;
+    int i ;
+    for(i = 0 ; i < my_queue->amount_of_jobs ; i++){
+        free(my_queue->my_jobs[i].ngram);
+        delete_result(&my_queue->my_jobs[i].results);
+    }
     my_queue->amount_of_jobs=0;
     my_queue->position=0;
-    my_queue->size=JOBS_AMOUNT;
-    free(my_queue->my_jobs);
-    my_queue->my_jobs=malloc(sizeof(job)*my_queue->size);
 }
 
-void destroy_job_scheduler(job_scheduler** myjob_scheduler){
-    free((*myjob_scheduler)->my_queue->my_jobs);
-    free((*myjob_scheduler)->my_queue);
-    free(*myjob_scheduler);
+void destroy_job_scheduler(job_scheduler** my_job_scheduler){
+    (*my_job_scheduler)->exit_programm=1;
+    pthread_cond_signal(&(*my_job_scheduler)->cond_get_a_job);
+
+    for (size_t i = 0; i < (*my_job_scheduler)->threads_amount; i++) {
+        pthread_join((*my_job_scheduler)->threads[i],NULL);
+    }
+
+    pthread_mutex_destroy(&(*my_job_scheduler)->mut_finished_f);
+    pthread_mutex_destroy(&(*my_job_scheduler)->mut_get_a_job);
+    pthread_mutex_destroy(&(*my_job_scheduler)->mut_heap_update);
+
+    pthread_cond_destroy(&(*my_job_scheduler)->cond_finished_f);
+    pthread_cond_destroy(&(*my_job_scheduler)->cond_get_a_job);
+    pthread_cond_destroy(&(*my_job_scheduler)->cond_heap_update);
+
+    free((*my_job_scheduler)->my_queue->my_jobs);
+    free((*my_job_scheduler)->my_queue);
+    free(*my_job_scheduler);
 }
 void *scheduler_worker(void* arg_scheduler){
     job_scheduler* scheduler = (job_scheduler*) arg_scheduler;

@@ -52,6 +52,11 @@ heap* heap_create(){
     new_heap = malloc(sizeof(heap));
     new_heap->root=NULL;//there is no root
     new_heap->number_of_nodes=0;//we have no childrens
+
+    new_heap->heap_busy=0;
+    pthread_mutex_init(&new_heap->mut_heap,0);
+    pthread_cond_init(&new_heap->cond_heap,0);
+
     new_heap->heap_hash = heap_create_hash_table();
     return new_heap;
 }
@@ -71,7 +76,25 @@ void heapify(heap* the_heap, heap_node* start_node){
     }
 }
 
+void lock_heap(heap* the_heap){
+    pthread_mutex_lock(&the_heap->mut_heap);
+    while(the_heap->heap_busy!=0){
+        pthread_cond_wait(&the_heap->cond_heap, &the_heap->mut_heap);
+    }
+    the_heap->heap_busy=1;
+    pthread_mutex_unlock(&the_heap->mut_heap);
+}
+
+
+void unlock_heap(heap* the_heap){
+    pthread_mutex_lock(&the_heap->mut_heap);
+    the_heap->heap_busy=0;
+    pthread_cond_signal(&the_heap->cond_heap);
+    pthread_mutex_unlock(&the_heap->mut_heap);
+}
+
 heap_node* heap_insert(heap* the_heap, char* word){
+    lock_heap(the_heap);
     int last_step;
     heap_node* cur_node=NULL;
     if (the_heap->number_of_nodes==0){
@@ -79,6 +102,7 @@ heap_node* heap_insert(heap* the_heap, char* word){
         cur_node = the_heap->root =heap_hash_insert(the_heap->heap_hash, word);//add to heap and get the node
 
         the_heap->number_of_nodes++;
+        unlock_heap(the_heap);
         return cur_node;
     }
     //find the node that we will insert the new entry
@@ -87,6 +111,7 @@ heap_node* heap_insert(heap* the_heap, char* word){
         //if the words exists increase and heapify
         cur_node->appeared++;
         heapify(the_heap,cur_node);
+        unlock_heap(the_heap);
         return cur_node;
     }else{
         //find where should be insert
@@ -102,8 +127,11 @@ heap_node* heap_insert(heap* the_heap, char* word){
         }
         the_heap->number_of_nodes++;
         heapify(the_heap,new_node);
+        unlock_heap(the_heap);
         return new_node;
     }
+
+
 }
 
 void move_up(heap* the_heap, heap_node* start_node){

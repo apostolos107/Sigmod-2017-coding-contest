@@ -30,9 +30,11 @@ typedef struct job_scheduler{
 
 queue* create_queue();
 job_scheduler* initialize_scheduler();
-void submit_job(queue* my_queue,job* myjob);
-void clean_job_table(queue* my_queue);
+void submit_job(job_scheduler* my_scheduler,job* myjob);
+void execute_all_jobs(job_scheduler*);
+void wait_all_tasks_finish(job_scheduler*);
+void clean_job_table(job_scheduler*);
 void destroy_job_scheduler(job_scheduler** myjob_scheduler);
-
+job* give_me_job(job_scheduler*);
 
 #endif

@@ -1,9 +1,8 @@
 #include "job.h"
 
-job* create_job(char type,char* ngram,int version){
-    job* my_job  = malloc(sizeof(job));
+
+void update_job(job* my_job,char type,char* ngram,int version){
     my_job->current_version=version;
-    my_job->ngram = ngram;
-    my_job->type =type;
-    return my_job;
+    my_job->ngram = copy_string(ngram);
+    my_job->type= type;
 }

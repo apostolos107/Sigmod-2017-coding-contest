@@ -95,6 +95,20 @@ int is_alive(trie_node* cur_node, int asked_version){
     if( cur_node->a_version<=asked_version && ( asked_version<cur_node->d_version|| cur_node->d_version==NOT_DELETED ) ){
         return 1;
     }else{
+        if(cur_node->current_children!=0){
+            return 1;
+        }
+        return 0;
+    }
+}
+
+int is_final(trie_node* cur_node, int asked_version){
+    if(cur_node==NULL){
+        return 0;
+    }
+    if(cur_node->is_final==YES && (cur_node->a_version<=asked_version && ( asked_version<cur_node->d_version|| cur_node->d_version==NOT_DELETED ))){
+        return 1;
+    }else{
         return 0;
     }
 }
@@ -133,7 +147,7 @@ result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap, int q_ver
         hash_table* root_hash_table = my_trie->children;
         if(current_word!=NULL){
             cur_node = hash_search(root_hash_table, current_word);//search in the hash table
-            if(( cur_node!=NULL && is_alive(cur_node,q_version) ) && cur_node->is_final==YES){//if found and it's final
+            if( cur_node!=NULL && is_final(cur_node,q_version) ){//if found and it's final
                 add_to_result(result,current_word,current_sub_str, my_heap, bloom);//add to the result
             }
             current_word=get_word(&current_word[strlen(current_word)+1], copied_string, original_size);//go to the next word
@@ -145,7 +159,7 @@ result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap, int q_ver
             return_value=binary_search_kid(cur_node, current_word, &spot_of_word);
             if (return_value==1 && is_alive(&cur_node->children[spot_of_word],q_version)) {
                 // printf("\tFOUND at %d ",spot_of_word);fflush(stdout);
-                if(cur_node->children[spot_of_word].is_final==YES){
+                if(is_final(&cur_node->children[spot_of_word],q_version)){
                     // printf("\t and it's final|SO I ADD TO RESULT|\n");
 
                     // printf("I add[%s]\n",current_sub_str);

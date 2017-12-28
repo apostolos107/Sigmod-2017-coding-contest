@@ -21,6 +21,7 @@ typedef struct trie{
 
 trie * init_trie();
 OK_SUCCESS insert_ngram(trie * my_trie, char * ngram);
+int update_version(trie * my_trie);
 void trie_compress(trie * my_trie);
 OK_SUCCESS trie_clean(trie** my_trie);
 OK_SUCCESS delete_ngram(trie * my_trie, char * ngram) ;

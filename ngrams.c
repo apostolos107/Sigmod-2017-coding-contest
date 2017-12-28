@@ -18,7 +18,7 @@ int main (int argc, char* argv[])
 
     char* query_filename=NULL;
     char* init_filename=NULL;
-
+    char last_function='0';
     int i;
     for (i = 1; i < argc; i++) {
         if( strcmp(argv[i],"-i")==0 ){
@@ -66,6 +66,7 @@ int main (int argc, char* argv[])
             if(chars_read>0){
                 buf[chars_read-1]='\0';//delete the \0
                 // printf("---Add{%s}\n", buf);
+                last_function = 'A';
                 insert_ngram(my_triee, buf);
             }else{
                 break;
@@ -113,6 +114,12 @@ int main (int argc, char* argv[])
         buf[chars_read-1]='\0';
         if(buf[0]=='Q'){
             the_word=&buf[2];
+            if (last_function != 'Q')
+            {
+                /* code */
+                update_version(my_triee);
+            }
+            last_function = 'Q';
             // printf("---Question{%s}\n", the_word);
             result_of_search* result = search(my_triee,the_word, my_heap);
             if(result->num_of_results!=0){
@@ -127,11 +134,23 @@ int main (int argc, char* argv[])
         }else
         if(buf[0]=='A'){
             the_word= &buf[2];
+            if (last_function == 'Q')
+            {
+                /* code */
+                update_version(my_triee);
+            }
+            last_function = 'A';
             // printf("---Add{%s}\n", the_word);
             insert_ngram(my_triee, the_word);
         }
         else if(buf[0]=='D'){
             the_word= &buf[2];
+            if (last_function == 'Q')
+            {
+                /* code */
+                update_version(my_triee);
+            }
+            last_function = 'D';
             // printf("---Delete{%s}\n", the_word);
             delete_ngram(my_triee, the_word);
 

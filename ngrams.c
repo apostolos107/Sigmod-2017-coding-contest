@@ -183,6 +183,7 @@ int main (int argc, char* argv[])
     trie_clean(&my_triee);
 //    hash_clean(&my_triee->children);
     free(my_triee);
+    destroy_job_scheduler(&my_scheduler);
 //free whatever is allocated
     heap_destroy(&my_heap);
     free(buf);

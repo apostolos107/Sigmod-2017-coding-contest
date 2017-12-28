@@ -56,10 +56,13 @@ void clean_job_table(job_scheduler* my_scheduler){
     }
     my_queue->amount_of_jobs=0;
     my_queue->position=0;
-    my_queue->size=JOBS_AMOUNT;
 }
 
 void destroy_job_scheduler(job_scheduler** myjob_scheduler){
+    pthread_mutex_destroy(&(*myjob_scheduler)->mut_finished_f);
+    pthread_mutex_destroy(&(*myjob_scheduler)->mut_get_a_job);
+    pthread_cond_destroy(&(*myjob_scheduler)->cond_finished_f);
+    pthread_cond_destroy(&(*myjob_scheduler)->cond_get_a_job);
     free((*myjob_scheduler)->my_queue->my_jobs);
     free((*myjob_scheduler)->my_queue);
     free(*myjob_scheduler);

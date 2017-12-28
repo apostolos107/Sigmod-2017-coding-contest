@@ -8,10 +8,11 @@
 typedef struct job{
     char type;
     char* ngram;
-    int print_position;
+    // int print_position;
     int current_version;
     result_of_search* results;
 }job;
 
+job* create_job(char,char*,int);
 
 #endif

@@ -5,6 +5,7 @@
 #include "tools.h"
 #include "trie.h"
 #include "heap.h"
+#include "job.h"
 
 #define CHAR_BUFFER_SIZE 1024
 
@@ -94,6 +95,10 @@ int main (int argc, char* argv[])
         //if it's a static file, compress before continue
         trie_compress(my_triee);
     }
+//create job scheduler
+
+    
+
     while(1){
         chars_read=getline(&buf, &size, read_from);
         if(chars_read==-1){
@@ -120,17 +125,19 @@ int main (int argc, char* argv[])
                 update_version(my_triee);
             }
             last_function = 'Q';
+            job* new_job = create_job('Q',the_word,my_triee->version);
+
             // printf("---Question{%s}\n", the_word);
-            result_of_search* result = search(my_triee,the_word, my_heap,my_triee->version);
-            if(result->num_of_results!=0){
-                result->cur_word[strlen(result->cur_word)-1]='\0';
-                // printf("====%s\n",result->cur_word);
-                printf("%s\n",result->cur_word);
-            }else{
-                // printf("====-1\n");
-                printf("-1\n");
-            }
-            delete_result(&result);
+            // result_of_search* result = search(my_triee,the_word, my_heap,my_triee->version);
+            // if(result->num_of_results!=0){
+            //     result->cur_word[strlen(result->cur_word)-1]='\0';
+            //     // printf("====%s\n",result->cur_word);
+            //     printf("%s\n",result->cur_word);
+            // }else{
+            //     // printf("====-1\n");
+            //     printf("-1\n");
+            // }
+            // delete_result(&result);
         }else
         if(buf[0]=='A'){
             the_word= &buf[2];

@@ -9,9 +9,9 @@
 #define THREADS_AMOUNT 10
 
 typedef struct queue{
-    int size;
-    int amount_of_jobs;
-    int position;
+    int size;//the size of queue
+    int amount_of_jobs;//the amount of jobs
+    int position;//the first job to take
     job* my_jobs;
 }queue;
 

@@ -186,7 +186,7 @@ trie_node * hash_search(hash_table * table, char * word)
 
 }
 
-int hash_delete(hash_table * table, char * word)
+int hash_delete(hash_table * table, char * word,int current_version)
 {
     unsigned long code = hash_word(word);
     int position = hash_round(code, table->mod_value);
@@ -195,22 +195,24 @@ int hash_delete(hash_table * table, char * word)
         position = hash_round(code, table->mod_value *2);
     }
 
-    return hash_bucket_delete(&table->buckets[position], word);
+    return hash_bucket_delete(&table->buckets[position], word,current_version);
 }
 
-int hash_bucket_delete(hash_bucket * bucket, char * word)
+int hash_bucket_delete(hash_bucket * bucket, char * word,int current_version)
 {
     int i;
     int spot, found;
     found = binary_search_array(bucket->children, bucket->current_children, word, &spot);
     if(found==1)
     {
-        free(bucket->children[spot].word);
-        free(bucket->children[spot].children);
-        if( (bucket->current_children-1)!=spot && (bucket->current_children-1)>0 ){
-            memmove(&bucket->children[spot],&bucket->children[spot+1],(bucket->current_children-spot-1)*sizeof(trie_node));
-        }
-        bucket->current_children--;
+        bucket->children[spot].d_version=current_version;
+        //the original delete
+        // free(bucket->children[spot].word);
+        // free(bucket->children[spot].children);
+        // if( (bucket->current_children-1)!=spot && (bucket->current_children-1)>0 ){
+        //     memmove(&bucket->children[spot],&bucket->children[spot+1],(bucket->current_children-spot-1)*sizeof(trie_node));
+        // }
+        // bucket->current_children--;
         return 1;
     }
     return -1;

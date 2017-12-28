@@ -57,7 +57,7 @@ OK_SUCCESS trie_clean(trie** mytree){
 
 OK_SUCCESS delete_ngram(trie * my_trie, char * ngram)
 {
-    return trie_delete(my_trie->children, ngram);
+    return trie_delete(my_trie->children, ngram,my_trie->version);
 }
 
 char* get_word(char* cur_ptr, char* original_ptr, int init_size){

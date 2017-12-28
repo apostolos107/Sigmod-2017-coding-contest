@@ -104,7 +104,7 @@ OK_SUCCESS delete_node_child(trie_node* node,int position)
     return 1;
 }
 
-OK_SUCCESS trie_delete(hash_table* table,char* ngram)
+OK_SUCCESS trie_delete(hash_table* table,char* ngram,int current_version)
 {
     int position,found,stack_count=0;
     int stack_size=count_words(ngram);
@@ -164,14 +164,16 @@ OK_SUCCESS trie_delete(hash_table* table,char* ngram)
         /*get next word of our N-Gram*/
         word=strtok(NULL, " ");
     }
+    // printf("OK TO STACK\n" );
     stack_count--;
     if(stack_count>=0){
         if(stack[stack_count].node->children[stack[stack_count].position].is_final==YES)
         {/*It must be a final word*/
-            stack[stack_count].node->children[stack[stack_count].position].is_final=NO;
+            // stack[stack_count].node->children[stack[stack_count].position].is_final=NO;
             if(stack[stack_count].node->children[stack[stack_count].position].current_children==0)
             {//if it does not have children delete the node
-                delete_node_child(stack[stack_count].node,stack[stack_count].position);
+                // delete_node_child(stack[stack_count].node,stack[stack_count].position);
+                stack[stack_count].node->children[stack[stack_count].position].d_version=current_version;
             }
             else
             {
@@ -192,10 +194,10 @@ OK_SUCCESS trie_delete(hash_table* table,char* ngram)
     {
         if(hash_node->is_final==YES)
         {
-            hash_node->is_final=NO;
+            // hash_node->is_final=NO;
             if(hash_node->current_children==0)
             {
-                int return_value= hash_delete(table, hash_word);
+                int return_value= hash_delete(table, hash_word,current_version);
                 free(hash_word);
                 free(stack);
                 return return_value;
@@ -210,7 +212,8 @@ OK_SUCCESS trie_delete(hash_table* table,char* ngram)
         if(stack[stack_count].node->children[stack[stack_count].position].current_children==0 && stack[stack_count].node->children[stack[stack_count].position].is_final!=YES)
         {
             /*If there are not children and It is not a final*/
-            delete_node_child(stack[stack_count].node,stack[stack_count].position);
+            // delete_node_child(stack[stack_count].node,stack[stack_count].position);
+            stack[stack_count].node->children[stack[stack_count].position].d_version=current_version;
         }
         else
         {
@@ -222,7 +225,7 @@ OK_SUCCESS trie_delete(hash_table* table,char* ngram)
     }
     if(hash_node->current_children==0 && hash_node->is_final==NO)
     {
-        int return_value= hash_delete(table, hash_word);
+        int return_value= hash_delete(table, hash_word,current_version);
         free(hash_word);
         free(stack);
         return return_value;

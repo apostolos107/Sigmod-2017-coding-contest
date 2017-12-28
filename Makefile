@@ -1,6 +1,6 @@
 SOURCE = ngrams.c trie.c hash_table.c trie_node.c tools.c heap.c  bloom_filter.c heap_hash.c job_scheduler.c job.c
 OBJS = ngrams.o trie.o hash_table.o trie_node.o tools.o heap.o  bloom_filter.o heap_hash.o job_scheduler.o job.o
-EXEC =NGrams.exe
+EXEC = NGrams.exe
 CC	= gcc
 FLAGS   = -g -c -O2
 FILES_FOLDER = test_files
@@ -44,7 +44,7 @@ job.o: job.c
 test: test_entry
 	./test_entry
 
-test_entry: trie.o hash_table.o trie_node.o tools.o heap.o murmur3.o bloom_filter.o heap_hash.o test_entry.o
+test_entry: trie.o hash_table.o trie_node.o tools.o heap.o bloom_filter.o heap_hash.o test_entry.o
 	$(CC) -o $@ $?
 
 test_entry.o: test_entry.c

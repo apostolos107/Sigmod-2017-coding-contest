@@ -49,7 +49,7 @@ void create_hash_node(hash_bucket * node)
     node->children = NULL;
 }
 
-trie_node * hash_insert(hash_table * table, char * word)
+trie_node * hash_insert(hash_table * table, char * word, int version)
 {
     unsigned long code = hash_word(word);
     int position = hash_round(code, table->mod_value);
@@ -57,10 +57,10 @@ trie_node * hash_insert(hash_table * table, char * word)
     {
         position = hash_round(code, table->mod_value *2);
     }
-    return hash_bucket_insert(table, position, word);
+    return hash_bucket_insert(table, position, word, version);
 }
 
-trie_node * hash_bucket_insert(hash_table * table, int pos, char * word)
+trie_node * hash_bucket_insert(hash_table * table, int pos, char * word, int version)
 {
     hash_bucket * current_bucket = &table->buckets[pos];
     if(current_bucket->children == NULL)
@@ -69,7 +69,7 @@ trie_node * hash_bucket_insert(hash_table * table, int pos, char * word)
         current_bucket->children = malloc(BUCKET_START_SIZE*sizeof(trie_node));
         init_trie_node(&current_bucket->children[0]);
         table->buckets[pos].children[0].word = copy_string(word);
-
+        table->buckets[pos].children[0].a_version = version;
         return &current_bucket->children[0];
     }
     else if(current_bucket->current_children == current_bucket->max_children)
@@ -96,7 +96,12 @@ trie_node * hash_bucket_insert(hash_table * table, int pos, char * word)
         memmove(&current_bucket->children[spot_on_bucket+1], &current_bucket->children[spot_on_bucket], (current_bucket->current_children-spot_on_bucket)*sizeof(trie_node));
         init_trie_node(&current_bucket->children[spot_on_bucket]);
         current_bucket->children[spot_on_bucket].word = copy_string(word);
+        table->buckets[pos].children[0].a_version = version;
         current_bucket->current_children ++;
+    }
+    else if(current_bucket->children[spot_on_bucket].d_version > current_bucket->children[spot_on_bucket].a_version )
+    {
+        current_bucket->children[spot_on_bucket].a_version = version;
     }
     return &current_bucket->children[spot_on_bucket];
 }

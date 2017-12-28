@@ -36,8 +36,8 @@ OK_SUCCESS insert_ngram(trie * my_trie, char * ngram)
     if(ngram == NULL || strcmp(ngram, "")==0)
         return 1;
     char * word = strtok(ngram, " ");
-    trie_node * node = hash_insert(my_trie->children, word);
-    return insert_ngram_to_node( node, NULL );
+    trie_node * node = hash_insert(my_trie->children, word, my_trie->version);
+    return insert_ngram_to_node( node, NULL , my_trie->version);
 }
 
 OK_SUCCESS trie_clean(trie** mytree){

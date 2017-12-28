@@ -18,6 +18,8 @@ typedef struct ultra_node{
 
 typedef struct trie_node{
     char* word;
+    int a_version;
+    int d_version;
     signed char is_final;
     int current_children;
     int max_children;

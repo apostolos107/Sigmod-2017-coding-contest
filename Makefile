@@ -1,8 +1,8 @@
-SOURCE = ngrams.c trie.c hash_table.c trie_node.c tools.c heap.c  bloom_filter.c heap_hash.c
-OBJS = ngrams.o trie.o hash_table.o trie_node.o tools.o heap.o  bloom_filter.o heap_hash.o
+SOURCE = ngrams.c trie.c hash_table.c trie_node.c tools.c heap.c  bloom_filter.c heap_hash.c job_scheduler.c job.c
+OBJS = ngrams.o trie.o hash_table.o trie_node.o tools.o heap.o  bloom_filter.o heap_hash.o job_scheduler.o job.o
 EXEC =NGrams.exe
 CC	= gcc
-FLAGS   = -g -c
+FLAGS   = -g -c -O2
 FILES_FOLDER = test_files
 all: clean $(EXEC)
 
@@ -33,6 +33,12 @@ tools.o: tools.c
 	$(CC) $(FLAGS) $?
 
 heap.o: heap.c
+	$(CC) $(FLAGS) $?
+
+job_scheduler.o: job_scheduler.c
+	$(CC) $(FLAGS) $?
+
+job.o: job.c
 	$(CC) $(FLAGS) $?
 
 test: test_entry

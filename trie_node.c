@@ -14,6 +14,8 @@ void init_trie_node(trie_node * node)
 
     node->is_final = NO;
     node->current_children = 0;
+    node->a_version=0;
+    node->d_version=-1;
     node->max_children = NUMBER_OF_CHILDREN;
     node->word=NULL;
     node->compressed = NULL;

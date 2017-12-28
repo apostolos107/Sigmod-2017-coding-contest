@@ -14,7 +14,6 @@ int main (int argc, char* argv[])
 {
     char * buf;//the buffer that we will use for reading lanes
     size_t size=CHAR_BUFFER_SIZE;
-
     buf = malloc(sizeof(char)*size);//alocate memory for the buffer that
     trie * my_triee = init_trie();
     bloom=bloom_filter_init();

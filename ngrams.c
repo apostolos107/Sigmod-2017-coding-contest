@@ -8,7 +8,6 @@
 
 #define CHAR_BUFFER_SIZE 1024
 
-bloom_filter * bloom ;
 
 int main (int argc, char* argv[])
 {
@@ -16,7 +15,6 @@ int main (int argc, char* argv[])
     size_t size=CHAR_BUFFER_SIZE;
     buf = malloc(sizeof(char)*size);//alocate memory for the buffer that
     trie * my_triee = init_trie();
-    bloom=bloom_filter_init();
 
     char* query_filename=NULL;
     char* init_filename=NULL;
@@ -154,7 +152,6 @@ int main (int argc, char* argv[])
     free(my_triee);
 //free whatever is allocated
     heap_destroy(&my_heap);
-    bloom_filter_destroy(&bloom);
     free(buf);
     return 0;
 }

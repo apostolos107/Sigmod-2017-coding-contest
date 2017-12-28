@@ -7,10 +7,15 @@
 #include "bloom_filter.h"
 
 #define STACK_SIZE 10
+#define ADD 'A'
+#define DELETE 'D'
+#define QUERY 'Q'
 
 typedef struct trie{
     hash_table * children;
     signed char is_static;
+    int version;
+    char last_function;
 }trie;
 
 

@@ -18,7 +18,16 @@ trie * init_trie()
 
     my_trie->children = create_hash_table();
     my_trie->is_static = -1;
+    my_trie->version = 0;
+    my_trie->last_function = ADD;
+
     return my_trie;
+}
+
+int update_version(trie * my_trie)
+{
+    my_trie->version++;
+    return my_trie->version;
 }
 
 

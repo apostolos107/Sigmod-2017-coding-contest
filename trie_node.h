@@ -7,7 +7,7 @@
 #define NUMBER_OF_CHILDREN 5
 #define YES 1
 #define NO -1
-
+#define NOT_DELETED -1
 
 typedef int OK_SUCCESS;
 

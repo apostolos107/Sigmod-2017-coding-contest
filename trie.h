@@ -25,5 +25,5 @@ int update_version(trie * my_trie);
 void trie_compress(trie * my_trie);
 OK_SUCCESS trie_clean(trie** my_trie);
 OK_SUCCESS delete_ngram(trie * my_trie, char * ngram) ;
-result_of_search* search(trie* my_trie,char* the_ngram,struct heap* heap);
+result_of_search* search(trie* my_trie, char* the_ngram, struct heap* heap, int version);
 #endif

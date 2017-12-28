@@ -114,7 +114,7 @@ int main (int argc, char* argv[])
         if(buf[0]=='Q'){
             the_word=&buf[2];
             // printf("---Question{%s}\n", the_word);
-            result_of_search* result = search(my_triee,the_word, my_heap);
+            result_of_search* result = search(my_triee,the_word, my_heap,my_triee->version);
             if(result->num_of_results!=0){
                 result->cur_word[strlen(result->cur_word)-1]='\0';
                 // printf("====%s\n",result->cur_word);

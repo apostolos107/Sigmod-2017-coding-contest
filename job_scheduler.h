@@ -17,8 +17,13 @@ typedef struct queue{
 
 typedef struct job_scheduler{
     pthread_t * threads;
-    pthread_mutex_t mutex;
-    pthread_cond_t condition_variable;
+    pthread_mutex_t mut_get_a_job;
+    pthread_cond_t cond_get_a_job;
+
+    pthread_mutex_t mut_finished_f;
+    pthread_cond_t cond_finished_f;
+
+
     queue* my_queue;
     int threads_amount;
 }job_scheduler;

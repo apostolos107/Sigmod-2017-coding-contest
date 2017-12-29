@@ -343,6 +343,9 @@ void heap_print_top_k(heap* the_heap, int k){
 
 void heap_destroy(heap** the_heap){
 
+    pthread_mutex_destroy(&(*the_heap)->mut_heap);
+    pthread_cond_destroy(&(*the_heap)->cond_heap);
+
     heap_hash_clean( &((*the_heap)->heap_hash) );
     free(*the_heap);
 }

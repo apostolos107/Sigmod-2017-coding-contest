@@ -2,6 +2,8 @@
 #include "trie.h"
 #include "job.h"
 #include <pthread.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 void *scheduler_worker(void* arg_scheduler);
 
@@ -28,15 +30,17 @@ job_scheduler* initialize_scheduler(){
     pthread_cond_init(&my_job_scheduler->cond_get_a_job, 0);
     pthread_cond_init(&my_job_scheduler->cond_finished_f, 0);
     pthread_cond_init(&my_job_scheduler->cond_heap_update, 0);
-    for(i=0 ; i< my_job_scheduler->threads_amount ; i++ ){
-        pthread_create(&my_job_scheduler->threads[i], NULL, scheduler_worker, (void*) my_job_scheduler );
-    }
 
     my_job_scheduler->heap_busy = 0;//noone is writting on the heap
     my_job_scheduler->finished_jobs = 0;
     my_job_scheduler->exit_programm = 0;
 
     my_job_scheduler->my_queue=create_queue();
+
+    for(i=0 ; i< my_job_scheduler->threads_amount ; i++ ){
+        pthread_create(&my_job_scheduler->threads[i], NULL, scheduler_worker, (void*) my_job_scheduler );
+    }
+
     return my_job_scheduler;
 }
 
@@ -47,9 +51,10 @@ void execute_all_jobs(job_scheduler* my_scheduler){
 
 void wait_all_tasks_finish(job_scheduler* my_scheduler){
     pthread_mutex_lock(&my_scheduler->mut_finished_f);
-    if(my_scheduler->finished_jobs<my_scheduler->my_queue->amount_of_jobs){
+    while (my_scheduler->finished_jobs<my_scheduler->my_queue->amount_of_jobs) {
         pthread_cond_wait(&my_scheduler->cond_finished_f, &my_scheduler->mut_finished_f);
     }
+    pthread_mutex_unlock(&my_scheduler->mut_finished_f);
     return;
 }
 
@@ -76,6 +81,7 @@ void clean_job_table(job_scheduler* my_scheduler){
     }
     my_queue->amount_of_jobs=0;
     my_queue->position=0;
+    my_scheduler->finished_jobs=0;
 }
 
 void destroy_job_scheduler(job_scheduler** my_job_scheduler){
@@ -122,7 +128,7 @@ void *scheduler_worker(void* arg_scheduler){
 
         //run the Q
         job* cur_job = &scheduler->my_queue->my_jobs[cur_pos_working];
-        cur_job->results = search(cur_job->my_trie, cur_job->ngram ,NULL, cur_job->current_version);
+        cur_job->results = search(cur_job->my_trie, cur_job->ngram ,cur_job->my_heap, cur_job->current_version);
 
 
         //out
@@ -131,14 +137,13 @@ void *scheduler_worker(void* arg_scheduler){
             pthread_cond_wait(&scheduler->cond_heap_update, &scheduler->mut_heap_update);
         }
         scheduler->heap_busy=1;
-        ///////////////////update the heap
-        //wake main if nessasery
+
         scheduler->finished_jobs++;
+        scheduler->heap_busy=0;
         if(scheduler->finished_jobs==scheduler->my_queue->amount_of_jobs){
             //wake up main
             pthread_cond_signal(&scheduler->cond_finished_f);
         }
-        scheduler->heap_busy=0;
         pthread_cond_signal(&scheduler->cond_heap_update);
         pthread_mutex_unlock(&scheduler->mut_heap_update);
     }

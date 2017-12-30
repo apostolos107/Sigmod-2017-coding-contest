@@ -152,7 +152,7 @@ result_of_search* search(trie* my_trie, char* the_ngram,heap* my_heap, int q_ver
             }
             current_word=get_word(&current_word[strlen(current_word)+1], copied_string, original_size);//go to the next word
         }
-        while((cur_node!=NULL && is_alive(cur_node,q_version)) && cur_node->word!=NULL && current_word!=NULL){
+        while((cur_node!=NULL && cur_node->word!=NULL && current_word!=NULL  && is_alive(cur_node,q_version))){
             int spot_of_word,return_value;
             // printf("\t{%s} ",current_word);fflush(stdout);
             // int spot=search_kid(cur_node,);

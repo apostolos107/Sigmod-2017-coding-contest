@@ -19,7 +19,7 @@ int main (int argc, char* argv[])
 
     char* query_filename=NULL;
     char* init_filename=NULL;
-    char last_function='0';
+    char last_function='A';
     int i;
     for (i = 1; i < argc; i++) {
         if( strcmp(argv[i],"-i")==0 ){

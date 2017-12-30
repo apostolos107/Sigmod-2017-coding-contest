@@ -30,6 +30,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram, int version)
     char * word = strtok(NULL, " ");
     if( word == NULL )
     {
+        node->a_version = version;
         node->is_final = YES;
         return 1;
     }
@@ -81,6 +82,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram, int version)
         word = strtok(NULL, " ");
         if (word == NULL)
         {/*end of N-Gram*/
+            temp->children[spot].a_version = version;
             temp->children[spot].is_final = YES;
             return 1;
         }

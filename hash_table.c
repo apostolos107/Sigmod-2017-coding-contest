@@ -96,7 +96,7 @@ trie_node * hash_bucket_insert(hash_table * table, int pos, char * word, int ver
         memmove(&current_bucket->children[spot_on_bucket+1], &current_bucket->children[spot_on_bucket], (current_bucket->current_children-spot_on_bucket)*sizeof(trie_node));
         init_trie_node(&current_bucket->children[spot_on_bucket]);
         current_bucket->children[spot_on_bucket].word = copy_string(word);
-        table->buckets[pos].children[0].a_version = version;
+        table->buckets[pos].children[spot_on_bucket].a_version = version;
         current_bucket->current_children ++;
     }
     else if(current_bucket->children[spot_on_bucket].d_version > current_bucket->children[spot_on_bucket].a_version )

@@ -110,7 +110,7 @@ int main (int argc, char* argv[])
                 // that means that we finshed with query file
                 fclose(read_from);
                 read_from=stdin;
-                continue;
+                break;
             }
             //maybe we will need to excecute somthing like F first
         }
@@ -126,10 +126,9 @@ int main (int argc, char* argv[])
             last_function = 'Q';
             job* new_job = give_me_job(my_scheduler);
             update_job(new_job,'Q',the_word,my_triee->version,my_triee,my_heap);
-            submit_job(my_scheduler,new_job);
+            // submit_job(my_scheduler,new_job);
             // printf("---Question{%s}\n", the_word);
-        }else
-        if(buf[0]=='A'){
+        }else if(buf[0]=='A'){
             the_word= &buf[2];
             if (last_function == 'Q')
             {
@@ -139,8 +138,7 @@ int main (int argc, char* argv[])
             last_function = 'A';
             // printf("---Add{%s}\n", the_word);
             insert_ngram(my_triee, the_word);
-        }
-        else if(buf[0]=='D'){
+        }else if(buf[0]=='D'){
             the_word= &buf[2];
             if (last_function == 'Q')
             {

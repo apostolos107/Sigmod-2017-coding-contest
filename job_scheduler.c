@@ -45,11 +45,17 @@ job_scheduler* initialize_scheduler(){
 }
 
 void execute_all_jobs(job_scheduler* my_scheduler){
+    if(my_scheduler->my_queue->amount_of_jobs==0){
+        return;
+    }
     pthread_cond_signal(&my_scheduler->cond_get_a_job);
     return;
 }
 
 void wait_all_tasks_finish(job_scheduler* my_scheduler){
+    if(my_scheduler->my_queue->amount_of_jobs==0){
+        return;
+    }
     pthread_mutex_lock(&my_scheduler->mut_finished_f);
     while (my_scheduler->finished_jobs<my_scheduler->my_queue->amount_of_jobs) {
         pthread_cond_wait(&my_scheduler->cond_finished_f, &my_scheduler->mut_finished_f);

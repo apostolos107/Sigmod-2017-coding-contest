@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include "job.h"
 
-#define JOBS_AMOUNT 30
-#define THREADS_AMOUNT 10
+#define JOBS_AMOUNT 3000
+#define THREADS_AMOUNT 7
 
 typedef struct queue{
     int size;//the size of queue

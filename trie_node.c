@@ -46,7 +46,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram, int version)
             }
             init_trie_node(&temp->children[0]);
             temp->children[0].word = copy_string(word);
-            temp->children[0].a_version = version;
+            // temp->children[0].a_version = version;
             spot = 0;
             temp->current_children ++;
             // printf("We added the word %s because the word before has no children\n", word);
@@ -67,7 +67,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram, int version)
                 /*create the new child*/
                 init_trie_node(&temp->children[spot]);
                 temp->children[spot].word = copy_string(word);
-                temp->children[spot].a_version = version;
+                // temp->children[spot].a_version = version;
 
                 temp->current_children ++;
 
@@ -75,7 +75,7 @@ OK_SUCCESS insert_ngram_to_node(trie_node * node, char * ngram, int version)
             }
             else if(temp->children[spot].d_version > temp->children[spot].a_version )
             {
-                temp->children[spot].a_version = version;
+                // temp->children[spot].a_version = version;
             }
         }
 

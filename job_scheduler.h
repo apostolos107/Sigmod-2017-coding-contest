@@ -28,7 +28,7 @@ typedef struct job_scheduler{
 
     int heap_busy;
     int finished_jobs;
-
+    int work;
     int exit_programm;
     queue* my_queue;
     int threads_amount;

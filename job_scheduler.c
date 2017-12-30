@@ -32,6 +32,7 @@ job_scheduler* initialize_scheduler(){
     pthread_cond_init(&my_job_scheduler->cond_heap_update, 0);
 
     my_job_scheduler->heap_busy = 0;//noone is writting on the heap
+    my_job_scheduler->work = 0;
     my_job_scheduler->finished_jobs = 0;
     my_job_scheduler->exit_programm = 0;
 
@@ -48,6 +49,7 @@ void execute_all_jobs(job_scheduler* my_scheduler){
     if(my_scheduler->my_queue->amount_of_jobs==0){
         return;
     }
+    my_scheduler->work = 1;
     pthread_cond_signal(&my_scheduler->cond_get_a_job);
     return;
 }
@@ -60,6 +62,7 @@ void wait_all_tasks_finish(job_scheduler* my_scheduler){
     while (my_scheduler->finished_jobs<my_scheduler->my_queue->amount_of_jobs) {
         pthread_cond_wait(&my_scheduler->cond_finished_f, &my_scheduler->mut_finished_f);
     }
+
     pthread_mutex_unlock(&my_scheduler->mut_finished_f);
     return;
 }
@@ -117,7 +120,7 @@ void *scheduler_worker(void* arg_scheduler){
 
         //get a job
         pthread_mutex_lock(&scheduler->mut_get_a_job);
-        while( scheduler->my_queue->position>=scheduler->my_queue->amount_of_jobs && scheduler->exit_programm==0){
+        while( (scheduler->my_queue->position>=scheduler->my_queue->amount_of_jobs || !scheduler->work) && scheduler->exit_programm==0) {
             pthread_cond_wait(&scheduler->cond_get_a_job, &scheduler->mut_get_a_job);
         }
         if(scheduler->exit_programm==1){
@@ -148,7 +151,9 @@ void *scheduler_worker(void* arg_scheduler){
         scheduler->heap_busy=0;
         if(scheduler->finished_jobs==scheduler->my_queue->amount_of_jobs){
             //wake up main
+            scheduler->work = 0;
             pthread_cond_signal(&scheduler->cond_finished_f);
+
         }
         pthread_cond_signal(&scheduler->cond_heap_update);
         pthread_mutex_unlock(&scheduler->mut_heap_update);

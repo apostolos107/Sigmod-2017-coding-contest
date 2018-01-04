@@ -111,6 +111,7 @@ void destroy_job_scheduler(job_scheduler** my_job_scheduler){
 
     free((*my_job_scheduler)->my_queue->my_jobs);
     free((*my_job_scheduler)->my_queue);
+    free((*my_job_scheduler)->threads);
     free(*my_job_scheduler);
 }
 void *scheduler_worker(void* arg_scheduler){

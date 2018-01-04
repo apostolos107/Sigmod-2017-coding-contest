@@ -172,19 +172,10 @@ OK_SUCCESS trie_delete(hash_table* table,char* ngram,int current_version)
         if(stack[stack_count].node->children[stack[stack_count].position].is_final==YES)
         {/*It must be a final word*/
             stack[stack_count].node->children[stack[stack_count].position].d_version=current_version;
-            // stack[stack_count].node->children[stack[stack_count].position].is_final=NO;
-            if(stack[stack_count].node->children[stack[stack_count].position].current_children==0)
-            {//if it does not have children delete the node
-                // delete_node_child(stack[stack_count].node,stack[stack_count].position);
-                // stack[stack_count].node->children[stack[stack_count].position].d_version=current_version;
-            }
-            else
-            {
-                // stack[stack_count].node->children[stack[stack_count].position].is_final=NO;
-                free(hash_word);
-                free(stack);
-                return 1;
-            }
+            free(hash_word);
+            free(stack);
+            return 1;
+
         }
         else
         {
@@ -198,7 +189,6 @@ OK_SUCCESS trie_delete(hash_table* table,char* ngram,int current_version)
     {
         if(hash_node->is_final==YES)
         {
-            // hash_node->is_final=NO;
             hash_node->d_version=current_version;
             if(hash_node->current_children==0)
             {
@@ -211,29 +201,6 @@ OK_SUCCESS trie_delete(hash_table* table,char* ngram,int current_version)
         free(hash_word);
         free(stack);
         return -1;
-    }
-    while(stack_count>=0){
-        /*It is a middle word or the first*/
-        if(stack[stack_count].node->children[stack[stack_count].position].current_children==0 && stack[stack_count].node->children[stack[stack_count].position].is_final!=YES)
-        {
-            /*If there are not children and It is not a final*/
-            // delete_node_child(stack[stack_count].node,stack[stack_count].position);
-            stack[stack_count].node->children[stack[stack_count].position].d_version=current_version;
-        }
-        else
-        {
-            free(hash_word);
-            free(stack);
-            return 1;
-        }
-        stack_count--;
-    }
-    if(hash_node->current_children==0 && hash_node->is_final==NO)
-    {
-        int return_value= hash_delete(table, hash_word,current_version);
-        free(hash_word);
-        free(stack);
-        return return_value;
     }
     free(hash_word);
     free(stack);

@@ -1,7 +1,7 @@
 #ifndef __TRIE_NODE__
 #define __TRIE_NODE__
 
-#include "hash_table.h"
+#include "../hash_table/hash_table.h"
 
 
 #define NUMBER_OF_CHILDREN 5

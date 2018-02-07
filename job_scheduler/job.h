@@ -3,8 +3,8 @@
 
 #define QUERY 'Q'
 
-#include "tools.h"
-#include "trie.h"
+#include "../tools.h"
+#include "../trie/trie.h"
 
 typedef struct job{
     char type;

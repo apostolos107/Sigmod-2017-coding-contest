@@ -1,4 +1,4 @@
-SOURCE = ngrams.c trie.c hash_table.c trie_node.c tools.c heap.c  bloom_filter.c heap_hash.c job_scheduler.c job.c
+SOURCE = ngrams.c trie/trie.c hash_table/hash_table.c trie/trie_node.c tools.c heap/heap.c  bloom_filter/bloom_filter.c heap/heap_hash.c job_scheduler/job_scheduler.c job_scheduler/job.c
 OBJS = ngrams.o trie.o hash_table.o trie_node.o tools.o heap.o  bloom_filter.o heap_hash.o job_scheduler.o job.o
 EXEC = NGrams.exe
 CC	= gcc
@@ -17,28 +17,31 @@ $(EXEC): $(OBJS)
 ngrams.o: ngrams.c
 	$(CC) $(FLAGS) $?
 
-hash_table.o: hash_table.c
+hash_table.o: hash_table/hash_table.c
 	$(CC) $(FLAGS) $?
 
-bloom_filter.o: bloom_filter.c
+bloom_filter.o: bloom_filter/bloom_filter.c
 	$(CC) $(FLAGS) $?
 
-trie.o: trie.c
+trie.o: trie/trie.c
 	$(CC) $(FLAGS) $?
 
-trie_node.o: trie_node.c
+trie_node.o: trie/trie_node.c
 	$(CC) $(FLAGS) $?
 
 tools.o: tools.c
 	$(CC) $(FLAGS) $?
 
-heap.o: heap.c
+heap.o: heap/heap.c
 	$(CC) $(FLAGS) $?
 
-job_scheduler.o: job_scheduler.c
+job_scheduler.o: job_scheduler/job_scheduler.c
 	$(CC) $(FLAGS) $?
 
-job.o: job.c
+job.o: job_scheduler/job.c
+	$(CC) $(FLAGS) $?
+
+heap_hash.o: heap/heap_hash.c
 	$(CC) $(FLAGS) $?
 
 test: test_entry
@@ -51,4 +54,4 @@ test_entry.o: test_entry.c
 	$(CC) $(FLAGS) $?
 
 clean:
-	rm -rf $(EXEC) $(OBJS)
+	rm -rf $(EXEC) $(OBJS) out

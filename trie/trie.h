@@ -2,9 +2,9 @@
 #define __TRIE__
 
 #include "trie_node.h"
-#include "tools.h"
-#include "heap.h"
-#include "bloom_filter.h"
+#include "../tools.h"
+#include "../heap/heap.h"
+#include "../bloom_filter/bloom_filter.h"
 
 #define STACK_SIZE 10
 #define ADD 'A'

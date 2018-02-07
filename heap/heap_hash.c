@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "heap_hash.h"
-#include "tools.h"
+#include "../tools.h"
 
 /*   sdbm hash function from:
     http://www.cse.yorku.ca/~oz/hash.html */

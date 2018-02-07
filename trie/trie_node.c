@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "trie.h"
-#include "tools.h"
+#include "../tools.h"
 #include "trie_node.h"
 // #include "hash_table.h"
 

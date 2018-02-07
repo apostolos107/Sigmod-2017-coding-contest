@@ -1,5 +1,5 @@
 #include "job.h"
-#include "trie.h"
+// #include "../trie/trie.h"
 
 
 void update_job(job* my_job,char type,char* ngram,int version, trie* my_trie, heap* my_heap){

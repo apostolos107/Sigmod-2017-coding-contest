@@ -1,9 +1,9 @@
 #ifndef __TOOLS_HEADER__
 #define __TOOLS_HEADER__
 
-#include "trie_node.h"
-#include "heap.h"
-#include "bloom_filter.h"
+#include "trie/trie_node.h"
+#include "heap/heap.h"
+#include "bloom_filter/bloom_filter.h"
 
 int count_words(char * s);
 char * copy_string(char * s);

@@ -1,8 +1,8 @@
 #ifndef __HASH_TABLE__
 #define __HASH_TABLE__
 
-#include "trie_node.h"
-#include "tools.h"
+#include "../trie/trie_node.h"
+#include "../tools.h"
 
 #define HASH_START_SIZE 100
 #define BUCKET_START_SIZE 20

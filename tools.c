@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tools.h"
-#include "heap.h"
-#include "bloom_filter.h"
+#include "heap/heap.h"
+#include "bloom_filter/bloom_filter.h"
 
 int count_words(char * s)
 { /*count number of words so we can know the N of our N-Gram*/

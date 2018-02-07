@@ -3,9 +3,9 @@
 #include <string.h>
 
 #include "tools.h"
-#include "trie.h"
-#include "heap.h"
-#include "job_scheduler.h"
+#include "trie/trie.h"
+#include "heap/heap.h"
+#include "job_scheduler/job_scheduler.h"
 
 #define CHAR_BUFFER_SIZE 1024
 

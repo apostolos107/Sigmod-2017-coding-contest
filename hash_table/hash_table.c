@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "trie_node.h"
-#include "hash_table.h"
-#include "tools.h"
+#include "../trie/trie_node.h"
+#include "../hash_table/hash_table.h"
+#include "../tools.h"
 
 /*   sdbm hash function from:
     http://www.cse.yorku.ca/~oz/hash.html */
